@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Coffee, Mail, Lock, User } from 'lucide-react';
 import { SocialLogin } from './SocialLogin';
 import type { User } from '@/pages/Index';
 
@@ -15,110 +14,68 @@ interface LoginPageProps {
 }
 
 export const LoginPage = ({ onLogin }: LoginPageProps) => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    role: 'Waiter' as 'Admin' | 'Waiter' | 'Cashier',
-    rememberMe: false
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<User['role']>('Waiter');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple validation
-    if (!formData.email || !formData.password) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    // Mock login/registration
-    const user: User = {
+    // Simple mock authentication
+    const userData: User = {
       id: Math.random().toString(36).substr(2, 9),
-      name: formData.name || formData.email.split('@')[0],
-      email: formData.email,
-      role: formData.role,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.email}`
+      name: email.split('@')[0],
+      email,
+      role,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
     };
-
-    onLogin(user);
+    
+    onLogin(userData);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 p-4">
-      <Card className="w-full max-w-md mx-auto animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-accent/20 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Coffee className="h-12 w-12 text-primary" />
-          </div>
           <CardTitle className="text-2xl font-bold">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+            {isRegistering ? 'Create Account' : 'Welcome Back'}
           </CardTitle>
-          <CardDescription>
-            {isLogin ? 'Sign in to your cafe account' : 'Register for a new account'}
-          </CardDescription>
+          <p className="text-muted-foreground">
+            {isRegistering ? 'Sign up for your cafe account' : 'Sign in to your cafe account'}
+          </p>
         </CardHeader>
         
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Enter your full name"
-                    className="pl-10"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-              </div>
-            )}
-            
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  className="pl-10"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  className="pl-10"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                />
-              </div>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>
-              <Select
-                value={formData.role}
-                onValueChange={(value: 'Admin' | 'Waiter' | 'Cashier') => 
-                  setFormData({ ...formData, role: value })
-                }
-              >
+              <Select value={role} onValueChange={(value: User['role']) => setRole(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
@@ -133,10 +90,8 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="remember"
-                checked={formData.rememberMe}
-                onCheckedChange={(checked) => 
-                  setFormData({ ...formData, rememberMe: checked as boolean })
-                }
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked === true)}
               />
               <Label htmlFor="remember" className="text-sm">
                 Remember me
@@ -144,38 +99,31 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             </div>
             
             <Button type="submit" className="w-full">
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isRegistering ? 'Create Account' : 'Sign In'}
             </Button>
           </form>
           
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-          
-          <SocialLogin onLogin={onLogin} />
-          
           <div className="text-center space-y-2">
+            <p className="text-sm text-muted-foreground">
+              {isRegistering ? 'Already have an account?' : "Don't have an account?"}
+            </p>
             <Button
               variant="link"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm"
+              onClick={() => setIsRegistering(!isRegistering)}
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isRegistering ? 'Sign In' : 'Register'}
             </Button>
-            
-            {isLogin && (
-              <Button variant="link" className="text-sm">
-                Forgot password?
-              </Button>
-            )}
           </div>
+          
+          {!isRegistering && (
+            <div className="text-center">
+              <Button variant="link" className="text-sm">
+                Forgot Password?
+              </Button>
+            </div>
+          )}
+          
+          <SocialLogin />
         </CardContent>
       </Card>
     </div>

@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { TopNavigation } from './TopNavigation';
 import { TableLayout } from './TableLayout';
 import { ThemeSelector } from '@/components/theme/ThemeSelector';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import type { User, Table } from '@/pages/Index';
 
 interface DashboardProps {
@@ -14,8 +17,17 @@ interface DashboardProps {
 export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => {
   const [isNavVisible, setIsNavVisible] = useState(true);
 
+  // Mock statistics for the dashboard
+  const stats = {
+    totalTables: 15,
+    available: 8,
+    occupied: 4,
+    ordering: 2,
+    reserved: 1,
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
       <TopNavigation
         user={user}
         onLogout={onLogout}
@@ -23,22 +35,85 @@ export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => 
         onToggleVisibility={() => setIsNavVisible(!isNavVisible)}
       />
       
-      <main className={`transition-all duration-300 ${isNavVisible ? 'pt-16' : 'pt-4'}`}>
-        <div className="container mx-auto p-4">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Cafe Dashboard
+      <main className={`transition-all duration-300 ${isNavVisible ? 'pt-20' : 'pt-8'}`}>
+        <div className="container mx-auto p-6 space-y-8">
+          {/* Welcome Header */}
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Cafe Management Dashboard
             </h1>
-            <p className="text-muted-foreground">
-              Welcome back, {user.name}! Manage your cafe operations from here.
+            <p className="text-lg text-muted-foreground">
+              Welcome back, <span className="font-semibold text-foreground">{user.name}</span>! 
+              Ready to serve today's customers.
             </p>
           </div>
-          
-          <TableLayout onTableSelect={onTableSelect} />
-          
-          <div className="mt-8">
-            <ThemeSelector />
+
+          {/* Dashboard Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Users className="h-8 w-8 text-blue-600" />
+                </div>
+                <div className="text-2xl font-bold text-blue-800">{stats.totalTables}</div>
+                <div className="text-sm text-blue-600">Total Tables</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <div className="text-2xl font-bold text-green-800">{stats.available}</div>
+                <div className="text-sm text-green-600">Available</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <XCircle className="h-8 w-8 text-red-600" />
+                </div>
+                <div className="text-2xl font-bold text-red-800">{stats.occupied}</div>
+                <div className="text-sm text-red-600">Occupied</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Clock className="h-8 w-8 text-yellow-600" />
+                </div>
+                <div className="text-2xl font-bold text-yellow-800">{stats.ordering}</div>
+                <div className="text-sm text-yellow-600">Ordering</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardContent className="p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Users className="h-8 w-8 text-purple-600" />
+                </div>
+                <div className="text-2xl font-bold text-purple-800">{stats.reserved}</div>
+                <div className="text-sm text-purple-600">Reserved</div>
+              </CardContent>
+            </Card>
           </div>
+          
+          {/* Main Table Layout */}
+          <Card className="bg-card/80 backdrop-blur-sm shadow-xl">
+            <CardContent className="p-6">
+              <TableLayout onTableSelect={onTableSelect} />
+            </CardContent>
+          </Card>
+          
+          {/* Theme Selector */}
+          <Card className="bg-card/80 backdrop-blur-sm shadow-xl">
+            <CardContent className="p-6">
+              <ThemeSelector />
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
