@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,6 +52,7 @@ export const OrderSummary = ({
     0
   );
   const total = subtotal + totalGst;
+  const totalItems = orderItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleModifierChange = (itemId: string, modifier: string) => {
     setModifiers({ ...modifiers, [itemId]: modifier });
@@ -118,11 +118,18 @@ export const OrderSummary = ({
   };
 
   return (
-    <Card className="sticky top-4">
+    <Card className="sticky top-4 w-full">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Order Summary</span>
-          <Badge variant="outline">Table {table.number}</Badge>
+        <CardTitle className="flex items-center justify-between flex-wrap gap-2">
+          <span className="text-lg sm:text-xl">Order Summary</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant="outline" className="text-xs sm:text-sm">Table {table.number}</Badge>
+            {totalItems > 0 && (
+              <Badge variant="secondary" className="text-xs sm:text-sm">
+                {totalItems} item{totalItems !== 1 ? 's' : ''}
+              </Badge>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
       
@@ -135,28 +142,30 @@ export const OrderSummary = ({
         ) : (
           <>
             {/* Order Items */}
-            <div className="space-y-3 max-h-60 overflow-y-auto">
+            <div className="space-y-3 max-h-60 sm:max-h-80 overflow-y-auto">
               {orderItems.map((item) => (
                 <div key={item.id} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{item.menuItem.name}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{item.menuItem.name}</p>
                       <p className="text-xs text-muted-foreground">
                         ${item.menuItem.price.toFixed(2)} each
                       </p>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 shrink-0">
                       <Button
                         size="sm"
                         variant="outline"
+                        className="h-8 w-8 p-0"
                         onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="w-8 text-center">{item.quantity}</span>
+                      <span className="w-8 text-center text-sm">{item.quantity}</span>
                       <Button
                         size="sm"
                         variant="outline"
+                        className="h-8 w-8 p-0"
                         onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                       >
                         <Plus className="h-3 w-3" />
@@ -202,15 +211,19 @@ export const OrderSummary = ({
 
             {/* Totals */}
             <div className="space-y-2 pt-4 border-t">
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm">
+                <span>Total Items:</span>
+                <span className="font-medium">{totalItems}</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span>Subtotal:</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm">
                 <span>GST (10%):</span>
                 <span>${totalGst.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg">
+              <div className="flex justify-between font-bold text-base sm:text-lg">
                 <span>Total:</span>
                 <span>${total.toFixed(2)}</span>
               </div>
@@ -219,38 +232,38 @@ export const OrderSummary = ({
             {/* Action Buttons */}
             <div className="space-y-2 pt-4">
               <div className="grid grid-cols-2 gap-2">
-                <Button onClick={handleConfirmOrder} className="bg-green-600 hover:bg-green-700">
+                <Button onClick={handleConfirmOrder} className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm">
                   <Check className="h-4 w-4 mr-1" />
                   Confirm
                 </Button>
-                <Button variant="outline" onClick={onClearOrder}>
+                <Button variant="outline" onClick={onClearOrder} className="text-xs sm:text-sm">
                   <RotateCcw className="h-4 w-4 mr-1" />
                   Clear
                 </Button>
               </div>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={handleHoldOrder}>
+                <Button variant="outline" onClick={handleHoldOrder} className="text-xs sm:text-sm">
                   <Clock className="h-4 w-4 mr-1" />
                   Hold
                 </Button>
-                <Button variant="outline" onClick={handleCheckout}>
+                <Button variant="outline" onClick={handleCheckout} className="text-xs sm:text-sm">
                   <CreditCard className="h-4 w-4 mr-1" />
                   Checkout
                 </Button>
               </div>
               
-              <Button className="w-full" onClick={handlePayment}>
+              <Button className="w-full text-xs sm:text-sm" onClick={handlePayment}>
                 <DollarSign className="h-4 w-4 mr-1" />
                 Payment
               </Button>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={handleMergeBills}>
+                <Button variant="outline" onClick={handleMergeBills} className="text-xs sm:text-sm">
                   <Merge className="h-4 w-4 mr-1" />
                   Merge Bills
                 </Button>
-                <Button variant="outline" onClick={handleSplitBills}>
+                <Button variant="outline" onClick={handleSplitBills} className="text-xs sm:text-sm">
                   <Split className="h-4 w-4 mr-1" />
                   Split Bills
                 </Button>

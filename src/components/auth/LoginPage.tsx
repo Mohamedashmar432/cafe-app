@@ -123,7 +123,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
             </div>
           )}
           
-          <SocialLogin />
+          <SocialLogin onLogin={onLogin} />
         </CardContent>
       </Card>
     </div>

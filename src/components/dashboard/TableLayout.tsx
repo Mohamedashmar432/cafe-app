@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -58,9 +57,7 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
     
     return (
       <div
-        className={`relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl ${
-          table.status === 'Ordering' ? 'animate-pulse' : ''
-        }`}
+        className={`relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl`}
         onClick={onClick}
       >
         {/* Table Surface */}

@@ -82,25 +82,25 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
   };
 
   const MenuItemCard = ({ item }: { item: MenuItem }) => (
-    <Card className="cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg">
+    <Card className="cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg w-full">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center space-x-2">
-            <span className="text-2xl">{item.icon}</span>
-            <span>{item.name}</span>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-base sm:text-lg flex items-center space-x-2 min-w-0">
+            <span className="text-xl sm:text-2xl shrink-0">{item.icon}</span>
+            <span className="truncate">{item.name}</span>
           </CardTitle>
-          <Badge className={getSubcategoryColor(item.subcategory)}>
+          <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs shrink-0`}>
             {item.subcategory}
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">{item.category}</p>
-            <p className="text-lg font-bold">${item.price.toFixed(2)}</p>
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm text-muted-foreground truncate">{item.category}</p>
+            <p className="text-base sm:text-lg font-bold">${item.price.toFixed(2)}</p>
           </div>
-          <Button onClick={() => addToOrder(item)} size="sm">
+          <Button onClick={() => addToOrder(item)} size="sm" className="shrink-0">
             <Plus className="h-4 w-4 mr-1" />
             Add
           </Button>
@@ -121,36 +121,37 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
       />
       
       <main className={`transition-all duration-300 ${isNavVisible ? 'pt-16' : 'pt-4'}`}>
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-2 sm:p-4">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={onBack}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
+          <div className="flex items-center justify-between mb-4 sm:mb-6 gap-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
+              <Button variant="outline" onClick={onBack} className="shrink-0">
+                <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+                <span className="sm:hidden">Back</span>
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold">Table {table.number} - Menu</h1>
-                <p className="text-muted-foreground">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl font-bold truncate">Table {table.number}</h1>
+                <p className="text-sm text-muted-foreground truncate">
                   {table.zone} Zone • {table.seats} Seats
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="font-semibold">{orderItems.length} items</span>
+            <div className="flex items-center space-x-2 shrink-0">
+              <ShoppingCart className="h-4 sm:h-5 w-4 sm:w-5" />
+              <span className="font-semibold text-sm sm:text-base">{orderItems.length}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-8">
             {/* Menu Items - Left Side */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="xl:col-span-2 space-y-4 sm:space-y-6">
               {categories.map(category => (
                 <div key={category}>
-                  <h3 className="text-xl font-semibold mb-4 bg-accent rounded-lg py-2 px-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 bg-accent rounded-lg py-2 px-4">
                     {category}
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {menuItems
                       .filter(item => item.category === category)
                       .map(item => (
@@ -162,7 +163,7 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
             </div>
 
             {/* Order Summary - Right Side */}
-            <div className="lg:col-span-1">
+            <div className="xl:col-span-1">
               <OrderSummary
                 table={table}
                 orderItems={orderItems}
