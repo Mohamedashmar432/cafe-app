@@ -1,7 +1,8 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Users, Clock, CheckCircle, XCircle, MapPin, Utensils, DoorOpen } from 'lucide-react';
 import type { Table } from '@/pages/Index';
 
 interface TableLayoutProps {
@@ -10,26 +11,34 @@ interface TableLayoutProps {
 
 export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
   const [tables] = useState<Table[]>([
-    // Left Zone (Window side)
-    { id: '1', number: '1', status: 'Available', zone: 'Left', seats: 4 },
-    { id: '2', number: '2', status: 'Ordering', zone: 'Left', seats: 2 },
-    { id: '3', number: '3', status: 'Full', zone: 'Left', seats: 6 },
-    { id: '4', number: '4', status: 'Available', zone: 'Left', seats: 4 },
-    { id: '5', number: '5', status: 'Booked', zone: 'Left', seats: 8 },
+    // Section 1 (formerly Left Zone)
+    { id: '1', number: '1', status: 'Available', zone: 'Section 1', seats: 4 },
+    { id: '2', number: '2', status: 'Ordering', zone: 'Section 1', seats: 2 },
+    { id: '3', number: '3', status: 'Full', zone: 'Section 1', seats: 6 },
+    { id: '4', number: '4', status: 'Available', zone: 'Section 1', seats: 4 },
+    { id: '5', number: '5', status: 'Booked', zone: 'Section 1', seats: 8 },
     
-    // Middle Zone (Main dining)
-    { id: '6', number: '6', status: 'Available', zone: 'Middle', seats: 4 },
-    { id: '7', number: '7', status: 'Full', zone: 'Middle', seats: 2 },
-    { id: '8', number: '8', status: 'Ordering', zone: 'Middle', seats: 4 },
-    { id: '9', number: '9', status: 'Available', zone: 'Middle', seats: 6 },
-    { id: '10', number: '10', status: 'Available', zone: 'Middle', seats: 4 },
-    { id: '11', number: '11', status: 'Booked', zone: 'Middle', seats: 8 },
+    // Section 2 (formerly Middle Zone)
+    { id: '6', number: '6', status: 'Available', zone: 'Section 2', seats: 4 },
+    { id: '7', number: '7', status: 'Full', zone: 'Section 2', seats: 2 },
+    { id: '8', number: '8', status: 'Ordering', zone: 'Section 2', seats: 4 },
+    { id: '9', number: '9', status: 'Available', zone: 'Section 2', seats: 6 },
+    { id: '10', number: '10', status: 'Available', zone: 'Section 2', seats: 4 },
+    { id: '11', number: '11', status: 'Booked', zone: 'Section 2', seats: 8 },
     
-    // Right Zone (Corner/Private)
-    { id: '12', number: '12', status: 'Available', zone: 'Right', seats: 2 },
-    { id: '13', number: '13', status: 'Full', zone: 'Right', seats: 4 },
-    { id: '14', number: '14', status: 'Ordering', zone: 'Right', seats: 6 },
-    { id: '15', number: '15', status: 'Available', zone: 'Right', seats: 4 },
+    // Section 3 (formerly Right Zone)
+    { id: '12', number: '12', status: 'Available', zone: 'Section 3', seats: 2 },
+    { id: '13', number: '13', status: 'Full', zone: 'Section 3', seats: 4 },
+    { id: '14', number: '14', status: 'Ordering', zone: 'Section 3', seats: 6 },
+    { id: '15', number: '15', status: 'Available', zone: 'Section 3', seats: 4 },
+  ]);
+
+  // Mock takeaway orders
+  const [takeawayOrders] = useState([
+    { id: 'T001', status: 'Preparing', customerName: 'John Doe', time: '5 min' },
+    { id: 'T002', status: 'Ready', customerName: 'Jane Smith', time: '2 min' },
+    { id: 'T003', status: 'Starting', customerName: 'Bob Wilson', time: '8 min' },
+    { id: 'T004', status: 'Preparing', customerName: 'Alice Brown', time: '3 min' },
   ]);
 
   const getStatusColor = (status: Table['status']) => {
@@ -49,6 +58,15 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
       case 'Full': return <Users className="h-4 w-4 text-red-600" />;
       case 'Booked': return <XCircle className="h-4 w-4 text-purple-600" />;
       default: return null;
+    }
+  };
+
+  const getTakeawayStatusColor = (status: string) => {
+    switch (status) {
+      case 'Starting': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Preparing': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Ready': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -121,9 +139,9 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
   };
 
   const tablesByZone = {
-    Left: tables.filter(t => t.zone === 'Left'),
-    Middle: tables.filter(t => t.zone === 'Middle'),
-    Right: tables.filter(t => t.zone === 'Right'),
+    'Section 1': tables.filter(t => t.zone === 'Section 1'),
+    'Section 2': tables.filter(t => t.zone === 'Section 2'),
+    'Section 3': tables.filter(t => t.zone === 'Section 3'),
   };
 
   return (
@@ -151,6 +169,62 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
         </div>
       </div>
 
+      {/* Navigation indicators */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <CardContent className="p-4 text-center">
+            <div className="flex items-center justify-center mb-2">
+              <DoorOpen className="h-8 w-8 text-blue-600" />
+            </div>
+            <div className="text-lg font-bold text-blue-800">Entrance</div>
+            <div className="text-sm text-blue-600">Main Entry</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <CardContent className="p-4 text-center">
+            <div className="flex items-center justify-center mb-2">
+              <Utensils className="h-8 w-8 text-orange-600" />
+            </div>
+            <div className="text-lg font-bold text-orange-800">Kitchen</div>
+            <div className="text-sm text-orange-600">Food Preparation</div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+          <CardContent className="p-4 text-center">
+            <div className="flex items-center justify-center mb-2">
+              <MapPin className="h-8 w-8 text-gray-600" />
+            </div>
+            <div className="text-lg font-bold text-gray-800">Restroom</div>
+            <div className="text-sm text-gray-600">Facilities</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Takeaway Orders Section */}
+      <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 mb-8">
+        <CardHeader>
+          <CardTitle className="text-center text-indigo-800">Takeaway Orders</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {takeawayOrders.map((order) => (
+              <div key={order.id} className="bg-white rounded-lg p-4 shadow-md border">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-lg">{order.id}</span>
+                  <Badge className={getTakeawayStatusColor(order.status)}>
+                    {order.status}
+                  </Badge>
+                </div>
+                <div className="text-sm text-muted-foreground mb-1">{order.customerName}</div>
+                <div className="text-xs text-muted-foreground">Est. {order.time}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Dining area layout */}
       <div className="bg-muted/30 rounded-2xl p-8 shadow-inner">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 min-h-96">
@@ -159,7 +233,7 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
               {/* Zone header */}
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                 <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  {zone} Zone
+                  {zone}
                 </div>
               </div>
               
@@ -178,22 +252,6 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-      
-      {/* Floor plan elements */}
-      <div className="flex justify-center space-x-8 text-muted-foreground text-sm">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-blue-300 rounded-full" />
-          <span>Entrance</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-orange-300 rounded-full" />
-          <span>Kitchen</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-gray-300 rounded-full" />
-          <span>Restroom</span>
         </div>
       </div>
     </div>

@@ -35,9 +35,56 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
     onLogin(userData);
   };
 
+  // Floating cafe SVG elements
+  const FloatingCafeElement = ({ children, className, delay = 0 }: { children: React.ReactNode; className: string; delay?: number }) => (
+    <div 
+      className={`absolute opacity-20 animate-pulse ${className}`}
+      style={{ animationDelay: `${delay}s` }}
+    >
+      {children}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-accent/20 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-accent/20 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Floating Cafe SVG Elements */}
+      <FloatingCafeElement className="top-10 left-10" delay={0}>
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" className="text-primary/30">
+          <path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.38 0 2.5-1.12 2.5-2.5S19.88 5 18.5 5V3zM16 5v3.5c0 .83-.67 1.5-1.5 1.5S13 9.33 13 8.5V5h3zm-5 0v3.5c0 .83-.67 1.5-1.5 1.5S8 9.33 8 8.5V5h3z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-20 right-20" delay={1}>
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor" className="text-accent/30">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="bottom-10 left-20" delay={2}>
+        <svg width="70" height="70" viewBox="0 0 24 24" fill="currentColor" className="text-secondary/30">
+          <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97L6.5 22h2.25l-.25-9.03C10.34 12.84 12 11.12 12 9V2h-1v7z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="bottom-20 right-10" delay={0.5}>
+        <svg width="55" height="55" viewBox="0 0 24 24" fill="currentColor" className="text-primary/25">
+          <path d="M8.1 13.34l2.83-2.83L12.93 12l2.83-2.83-1.41-1.41L12.93 9.17l-1.41-1.41L8.1 10.93 6.69 9.52 5.28 10.93l2.82 2.41zm8.26-2.85c1.17-.52 2.61-.9 4.24-.9.72 0 1.39.1 2.03.26l1.52-6.63C24.6 2.48 24.2 2 23.72 2H4.27c-.48 0-.88.48-.63 1.22l1.52 6.63c.64-.16 1.31-.26 2.03-.26 1.63 0 3.07.38 4.24.9L12 9.12l.57 1.37z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-1/2 left-5" delay={1.5}>
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="currentColor" className="text-accent/25">
+          <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-1/3 right-5" delay={2.5}>
+        <svg width="65" height="65" viewBox="0 0 24 24" fill="currentColor" className="text-secondary/25">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-card/90">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
             {isRegistering ? 'Create Account' : 'Welcome Back'}
