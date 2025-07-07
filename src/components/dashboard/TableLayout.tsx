@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Clock, CheckCircle, XCircle, MapPin, Utensils, DoorOpen } from 'lucide-react';
+import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import type { Table } from '@/pages/Index';
 
 interface TableLayoutProps {
@@ -169,62 +169,6 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
         </div>
       </div>
 
-      {/* Navigation indicators */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
-              <DoorOpen className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="text-lg font-bold text-blue-800">Entrance</div>
-            <div className="text-sm text-blue-600">Main Entry</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Utensils className="h-8 w-8 text-orange-600" />
-            </div>
-            <div className="text-lg font-bold text-orange-800">Kitchen</div>
-            <div className="text-sm text-orange-600">Food Preparation</div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
-          <CardContent className="p-4 text-center">
-            <div className="flex items-center justify-center mb-2">
-              <MapPin className="h-8 w-8 text-gray-600" />
-            </div>
-            <div className="text-lg font-bold text-gray-800">Restroom</div>
-            <div className="text-sm text-gray-600">Facilities</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Takeaway Orders Section */}
-      <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 mb-8">
-        <CardHeader>
-          <CardTitle className="text-center text-indigo-800">Takeaway Orders</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {takeawayOrders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg p-4 shadow-md border">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-lg">{order.id}</span>
-                  <Badge className={getTakeawayStatusColor(order.status)}>
-                    {order.status}
-                  </Badge>
-                </div>
-                <div className="text-sm text-muted-foreground mb-1">{order.customerName}</div>
-                <div className="text-xs text-muted-foreground">Est. {order.time}</div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Dining area layout */}
       <div className="bg-muted/30 rounded-2xl p-8 shadow-inner">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 min-h-96">
@@ -254,6 +198,29 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
           ))}
         </div>
       </div>
+
+      {/* Takeaway Orders Section */}
+      <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
+        <CardHeader>
+          <CardTitle className="text-center text-indigo-800">Takeaway Orders</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {takeawayOrders.map((order) => (
+              <div key={order.id} className="bg-white rounded-lg p-4 shadow-md border">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-lg">{order.id}</span>
+                  <Badge className={getTakeawayStatusColor(order.status)}>
+                    {order.status}
+                  </Badge>
+                </div>
+                <div className="text-sm text-muted-foreground mb-1">{order.customerName}</div>
+                <div className="text-xs text-muted-foreground">Est. {order.time}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
