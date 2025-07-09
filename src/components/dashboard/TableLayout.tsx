@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { useTheme } from '@/components/theme/ThemeProvider';
 import type { Table } from '@/pages/Index';
 
 interface TableLayoutProps {
@@ -10,6 +11,7 @@ interface TableLayoutProps {
 }
 
 export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
+  const { theme } = useTheme();
   const [tables] = useState<Table[]>([
     // Section 1 (formerly Left Zone)
     { id: '1', number: '1', status: 'Available', zone: 'Section 1', seats: 4 },
@@ -70,15 +72,190 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
     }
   };
 
-  const TableShape = ({ table, onClick }: { table: Table; onClick: () => void }) => {
+  // Theme-specific table rendering
+  const renderTableByTheme = (table: Table, onClick: () => void) => {
+    if (theme === 'sunset') {
+      return (
+        <div
+          className="relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          onClick={onClick}
+        >
+          {/* Realistic dining table for sunset theme */}
+          <div className={`
+            w-32 h-20 rounded-2xl shadow-lg border-4 border-amber-200
+            ${getStatusColor(table.status)}
+            flex items-center justify-center relative overflow-hidden
+          `}>
+            {/* Wood grain texture */}
+            <div className="absolute inset-0 opacity-30">
+              <div className="w-full h-full bg-gradient-to-br from-amber-100/50 to-orange-200/50 rounded-2xl" />
+            </div>
+            
+            {/* Table number */}
+            <div className="relative z-10 text-white font-bold text-xl bg-black/20 rounded-full w-8 h-8 flex items-center justify-center">
+              {table.number}
+            </div>
+            
+            {/* Chair placement around table */}
+            {Array.from({ length: table.seats }).map((_, i) => {
+              const angle = (i * 360) / table.seats;
+              const distance = 50;
+              const x = Math.cos((angle * Math.PI) / 180) * distance;
+              const y = Math.sin((angle * Math.PI) / 180) * distance;
+              
+              return (
+                <div
+                  key={i}
+                  className="absolute w-8 h-8 bg-amber-600 border-2 border-amber-800 rounded-lg shadow-md"
+                  style={{
+                    left: `calc(50% + ${x}px - 16px)`,
+                    top: `calc(50% + ${y}px - 16px)`,
+                    transform: `rotate(${angle + 90}deg)`,
+                  }}
+                />
+              );
+            })}
+          </div>
+          
+          {/* Table info */}
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-card rounded-md shadow-lg p-2 min-w-20 border">
+            <div className="text-xs text-center">
+              <div className="font-semibold">Table {table.number}</div>
+              <div className="text-muted-foreground">{table.seats} seats</div>
+              <Badge variant="outline" className="text-xs mt-1">
+                {table.status}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (theme === 'ocean') {
+      return (
+        <div
+          className="relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          onClick={onClick}
+        >
+          {/* Ocean-themed round table */}
+          <div className={`
+            w-28 h-28 rounded-full shadow-lg border-4 border-blue-200
+            ${getStatusColor(table.status)}
+            flex items-center justify-center relative overflow-hidden
+          `}>
+            {/* Wave pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="w-full h-full bg-gradient-to-br from-blue-100/50 to-cyan-200/50 rounded-full" />
+              <div className="absolute inset-2 border-2 border-blue-300/30 rounded-full" />
+            </div>
+            
+            {/* Table number */}
+            <div className="relative z-10 text-white font-bold text-lg bg-blue-900/40 rounded-full w-10 h-10 flex items-center justify-center">
+              {table.number}
+            </div>
+            
+            {/* Chairs around circular table */}
+            {Array.from({ length: table.seats }).map((_, i) => {
+              const angle = (i * 360) / table.seats;
+              const distance = 42;
+              const x = Math.cos((angle * Math.PI) / 180) * distance;
+              const y = Math.sin((angle * Math.PI) / 180) * distance;
+              
+              return (
+                <div
+                  key={i}
+                  className="absolute w-6 h-8 bg-blue-600 border-2 border-blue-800 rounded-t-lg shadow-md"
+                  style={{
+                    left: `calc(50% + ${x}px - 12px)`,
+                    top: `calc(50% + ${y}px - 16px)`,
+                    transform: `rotate(${angle}deg)`,
+                  }}
+                />
+              );
+            })}
+          </div>
+          
+          {/* Table info */}
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-card rounded-md shadow-lg p-2 min-w-20 border">
+            <div className="text-xs text-center">
+              <div className="font-semibold">Table {table.number}</div>
+              <div className="text-muted-foreground">{table.seats} seats</div>
+              <Badge variant="outline" className="text-xs mt-1">
+                {table.status}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (theme === 'forest') {
+      return (
+        <div
+          className="relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          onClick={onClick}
+        >
+          {/* Forest-themed hexagonal table */}
+          <div className={`
+            w-24 h-24 shadow-lg border-4 border-green-200
+            ${getStatusColor(table.status)}
+            flex items-center justify-center relative overflow-hidden
+          `}
+          style={{
+            clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
+          }}>
+            {/* Wood texture */}
+            <div className="absolute inset-0 opacity-25">
+              <div className="w-full h-full bg-gradient-to-br from-green-100/50 to-emerald-200/50" />
+            </div>
+            
+            {/* Table number */}
+            <div className="relative z-10 text-white font-bold text-lg bg-green-900/40 rounded-full w-8 h-8 flex items-center justify-center">
+              {table.number}
+            </div>
+            
+            {/* Chairs around hexagonal table */}
+            {Array.from({ length: table.seats }).map((_, i) => {
+              const angle = (i * 360) / table.seats;
+              const distance = 40;
+              const x = Math.cos((angle * Math.PI) / 180) * distance;
+              const y = Math.sin((angle * Math.PI) / 180) * distance;
+              
+              return (
+                <div
+                  key={i}
+                  className="absolute w-6 h-6 bg-green-700 border-2 border-green-900 rounded shadow-md"
+                  style={{
+                    left: `calc(50% + ${x}px - 12px)`,
+                    top: `calc(50% + ${y}px - 12px)`,
+                    transform: `rotate(${angle}deg)`,
+                  }}
+                />
+              );
+            })}
+          </div>
+          
+          {/* Table info */}
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-card rounded-md shadow-lg p-2 min-w-20 border">
+            <div className="text-xs text-center">
+              <div className="font-semibold">Table {table.number}</div>
+              <div className="text-muted-foreground">{table.seats} seats</div>
+              <Badge variant="outline" className="text-xs mt-1">
+                {table.status}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Default theme - original design
     const isRectangular = table.seats >= 6;
-    
     return (
       <div
-        className={`relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl`}
+        className="relative cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl"
         onClick={onClick}
       >
-        {/* Table Surface */}
         <div className={`
           ${isRectangular ? 'w-24 h-16' : 'w-20 h-20'} 
           ${getStatusColor(table.status)}
@@ -86,23 +263,19 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
           flex items-center justify-center
           relative overflow-hidden
         `}>
-          {/* Table texture/pattern */}
           <div className="absolute inset-0 opacity-20">
             <div className="w-full h-full bg-gradient-to-br from-white/30 to-transparent rounded-lg" />
           </div>
           
-          {/* Table number */}
           <div className="relative z-10 text-white font-bold text-lg">
             {table.number}
           </div>
           
-          {/* Status indicator */}
           <div className="absolute top-1 right-1">
             {getStatusIcon(table.status)}
           </div>
         </div>
         
-        {/* Chairs around the table */}
         <div className="absolute inset-0">
           {Array.from({ length: table.seats }).map((_, i) => {
             const angle = (i * 360) / table.seats;
@@ -124,7 +297,6 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
           })}
         </div>
         
-        {/* Table info card */}
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-card rounded-md shadow-lg p-2 min-w-20 border">
           <div className="text-xs text-center">
             <div className="font-semibold">Table {table.number}</div>
@@ -148,8 +320,8 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
     <div className="space-y-8">
       {/* Header with status legend */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-foreground">Dining Area Layout</h2>
-        <div className="flex justify-center items-center space-x-6 bg-card rounded-lg p-4 shadow-sm">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground">Dining Area Layout</h2>
+        <div className="flex flex-wrap justify-center items-center gap-3 md:gap-6 bg-card rounded-lg p-4 shadow-sm">
           <div className="flex items-center space-x-2">
             <div className="w-4 h-4 rounded-full bg-green-500" />
             <span className="text-sm font-medium">Available</span>
@@ -170,26 +342,21 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
       </div>
 
       {/* Dining area layout */}
-      <div className="bg-muted/30 rounded-2xl p-8 shadow-inner">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 min-h-96">
+      <div className="bg-muted/30 rounded-2xl p-4 md:p-8 shadow-inner">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-12 min-h-96">
           {Object.entries(tablesByZone).map(([zone, zoneTables]) => (
             <div key={zone} className="relative">
-              {/* Zone header */}
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <div className="bg-primary text-primary-foreground px-3 md:px-4 py-1 md:py-2 rounded-full text-sm font-semibold shadow-lg">
                   {zone}
                 </div>
               </div>
               
-              {/* Zone background */}
-              <div className="bg-background/60 rounded-xl p-6 h-full border-2 border-dashed border-muted-foreground/20">
-                <div className="grid grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-8 pt-4 justify-items-center">
+              <div className="bg-background/60 rounded-xl p-4 md:p-6 h-full border-2 border-dashed border-muted-foreground/20">
+                <div className="grid grid-cols-2 gap-4 md:gap-8 pt-4 justify-items-center">
                   {zoneTables.map((table) => (
                     <div key={table.id} className="relative pb-8">
-                      <TableShape
-                        table={table}
-                        onClick={() => onTableSelect(table)}
-                      />
+                      {renderTableByTheme(table, () => onTableSelect(table))}
                     </div>
                   ))}
                 </div>
@@ -205,7 +372,7 @@ export const TableLayout = ({ onTableSelect }: TableLayoutProps) => {
           <CardTitle className="text-center text-indigo-800">Takeaway Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {takeawayOrders.map((order) => (
               <div key={order.id} className="bg-white rounded-lg p-4 shadow-md border">
                 <div className="flex justify-between items-center mb-2">

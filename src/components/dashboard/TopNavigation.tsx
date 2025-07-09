@@ -21,13 +21,13 @@ import {
   Users,
   Package,
   Clock,
-  LogIn,
   LogOut,
   Power,
   Maximize,
   ChevronDown,
   Eye,
-  EyeOff
+  EyeOff,
+  MoreHorizontal
 } from 'lucide-react';
 import type { User } from '@/pages/Index';
 
@@ -40,6 +40,7 @@ interface TopNavigationProps {
 
 export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }: TopNavigationProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuItems = [
     { name: 'Order', icon: FileText, action: () => console.log('Order clicked') },
@@ -84,24 +85,78 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
           <div className="flex items-center justify-between h-16">
             {/* Left side - Menu items */}
             <div className="flex items-center space-x-1 ml-12">
-              {menuItems.map((item) => (
-                <Button
-                  key={item.name}
-                  variant="ghost"
-                  size="sm"
-                  onClick={item.action}
-                  className="flex items-center space-x-2 hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span className="hidden md:block">{item.name}</span>
-                </Button>
-              ))}
+              {/* Desktop menu items - hidden on mobile and tablet */}
+              <div className="hidden xl:flex items-center space-x-1">
+                {menuItems.map((item) => (
+                  <Button
+                    key={item.name}
+                    variant="ghost"
+                    size="sm"
+                    onClick={item.action}
+                    className="flex items-center space-x-2 hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Button>
+                ))}
+              </div>
+
+              {/* Tablet menu items - icons only */}
+              <div className="hidden md:flex xl:hidden items-center space-x-1">
+                {menuItems.slice(0, 6).map((item) => (
+                  <Button
+                    key={item.name}
+                    variant="ghost"
+                    size="sm"
+                    onClick={item.action}
+                    className="p-2 hover:bg-accent hover:text-accent-foreground transition-colors"
+                    title={item.name}
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </Button>
+                ))}
+                {/* More dropdown for remaining items */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-2">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {menuItems.slice(6).map((item) => (
+                      <DropdownMenuItem key={item.name} onClick={item.action}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              {/* Mobile menu dropdown */}
+              <div className="md:hidden">
+                <DropdownMenu open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-2">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    {menuItems.map((item) => (
+                      <DropdownMenuItem key={item.name} onClick={item.action}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
 
             {/* Right side - User info and actions */}
-            <div className="flex items-center space-x-4">
-              {/* Action buttons */}
-              <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 md:space-x-4">
+              {/* Action buttons - hidden on mobile */}
+              <div className="hidden md:flex items-center space-x-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -109,7 +164,7 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
                   className="flex items-center space-x-2"
                 >
                   <Maximize className="h-4 w-4" />
-                  <span className="hidden md:block">Fullscreen</span>
+                  <span className="hidden lg:block">Fullscreen</span>
                 </Button>
                 
                 <Button
@@ -119,7 +174,7 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
                   className="flex items-center space-x-2 text-red-600 hover:text-red-700"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden md:block">Sign Out</span>
+                  <span className="hidden lg:block">Sign Out</span>
                 </Button>
                 
                 <Button
@@ -129,7 +184,7 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
                   className="flex items-center space-x-2"
                 >
                   <Power className="h-4 w-4" />
-                  <span className="hidden md:block">Quit</span>
+                  <span className="hidden lg:block">Quit</span>
                 </Button>
               </div>
 
@@ -141,7 +196,7 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <div className="hidden md:block text-left">
+                    <div className="hidden sm:block text-left">
                       <p className="text-sm font-medium">{user.name}</p>
                       <p className="text-xs text-muted-foreground">{user.role}</p>
                     </div>
@@ -156,6 +211,17 @@ export const TopNavigation = ({ user, onLogout, isVisible, onToggleVisibility }:
                       <span className="text-xs text-muted-foreground">{user.role}</span>
                     </div>
                   </DropdownMenuItem>
+                  {/* Mobile-only action items */}
+                  <div className="md:hidden">
+                    <DropdownMenuItem onClick={handleFullscreen}>
+                      <Maximize className="mr-2 h-4 w-4" />
+                      <span>Fullscreen</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.close()}>
+                      <Power className="mr-2 h-4 w-4" />
+                      <span>Quit</span>
+                    </DropdownMenuItem>
+                  </div>
                   <DropdownMenuItem onClick={onLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
