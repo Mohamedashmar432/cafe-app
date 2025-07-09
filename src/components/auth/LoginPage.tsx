@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { SocialLogin } from './SocialLogin';
 import type { User } from '@/pages/Index';
 
@@ -14,22 +12,19 @@ interface LoginPageProps {
 }
 
 export const LoginPage = ({ onLogin }: LoginPageProps) => {
-  const [email, setEmail] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<User['role']>('Waiter');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple mock authentication
     const userData: User = {
-      id: Math.random().toString(36).substr(2, 9),
-      name: email.split('@')[0],
-      email,
-      role,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      id: employeeId,
+      name: `Employee ${employeeId}`,
+      email: `employee${employeeId}@cafe.com`,
+      role: 'Waiter',
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${employeeId}`,
     };
     
     onLogin(userData);
@@ -84,26 +79,75 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         </svg>
       </FloatingCafeElement>
 
+      {/* Additional Food and Cafe Elements */}
+      <FloatingCafeElement className="top-5 right-1/3" delay={3}>
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="text-orange-400/30">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM8 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM16 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="bottom-1/3 left-10" delay={3.5}>
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor" className="text-green-400/30">
+          <path d="M12 2l-5.5 9h11L12 2zM5.8 13l2.9-5h6.6l2.9 5H5.8zM12 14.5L8.5 22h7L12 14.5z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-1/4 left-1/3" delay={4}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-red-400/30">
+          <path d="M22 12c0-5.54-4.46-10-10-10S2 6.46 2 12c0 5.54 4.46 10 10 10s10-4.46 10-10zM8 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm8 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="bottom-5 right-1/4" delay={4.5}>
+        <svg width="58" height="58" viewBox="0 0 24 24" fill="currentColor" className="text-yellow-400/30">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-2/3 right-8" delay={5}>
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor" className="text-purple-400/30">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-16 left-1/2" delay={5.5}>
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" className="text-indigo-400/30">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="bottom-1/4 right-2" delay={6}>
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="currentColor" className="text-pink-400/30">
+          <path d="M17.6 11.48 19.44 8.3a.6.6 0 0 0-.4-.9H13.4a.6.6 0 0 0-.4.9l1.84 3.18a.6.6 0 0 0 1.04 0l1.72-2.98z"/>
+        </svg>
+      </FloatingCafeElement>
+
+      <FloatingCafeElement className="top-3/4 left-6" delay={6.5}>
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor" className="text-teal-400/30">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+      </FloatingCafeElement>
+
       <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-card/90">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
-            {isRegistering ? 'Create Account' : 'Welcome Back'}
+            Cafe Login
           </CardTitle>
           <p className="text-muted-foreground">
-            {isRegistering ? 'Sign up for your cafe account' : 'Sign in to your cafe account'}
+            Sign in to your employee account
           </p>
         </CardHeader>
         
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="employeeId">Employee ID</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                id="employeeId"
+                type="text"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
+                placeholder="Enter your employee ID"
                 required
               />
             </div>
@@ -120,55 +164,16 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={(value: User['role']) => setRole(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Waiter">Waiter</SelectItem>
-                  <SelectItem value="Cashier">Cashier</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="remember"
-                checked={rememberMe}
-                onCheckedChange={(checked) => setRememberMe(checked === true)}
-              />
-              <Label htmlFor="remember" className="text-sm">
-                Remember me
-              </Label>
-            </div>
-            
             <Button type="submit" className="w-full">
-              {isRegistering ? 'Create Account' : 'Sign In'}
+              Sign In
             </Button>
           </form>
           
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">
-              {isRegistering ? 'Already have an account?' : "Don't have an account?"}
-            </p>
-            <Button
-              variant="link"
-              onClick={() => setIsRegistering(!isRegistering)}
-            >
-              {isRegistering ? 'Sign In' : 'Register'}
+          <div className="text-center">
+            <Button variant="link" className="text-sm">
+              Forgot Password?
             </Button>
           </div>
-          
-          {!isRegistering && (
-            <div className="text-center">
-              <Button variant="link" className="text-sm">
-                Forgot Password?
-              </Button>
-            </div>
-          )}
           
           <SocialLogin onLogin={onLogin} />
         </CardContent>
