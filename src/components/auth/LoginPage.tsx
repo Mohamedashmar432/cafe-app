@@ -14,11 +14,32 @@ interface LoginPageProps {
 export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [employeeId, setEmployeeId] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
-    // Simple mock authentication
+    // Check for admin credentials
+    if (employeeId === '0001' && password === 'admin123') {
+      const userData: User = {
+        id: '0001',
+        name: 'Admin User',
+        email: 'admin@cafe.com',
+        role: 'Admin',
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=admin`,
+      };
+      onLogin(userData);
+      return;
+    }
+    
+    // Check if credentials are provided
+    if (!employeeId || !password) {
+      setError('Please enter both Employee ID and Password');
+      return;
+    }
+    
+    // Simple mock authentication for regular employees
     const userData: User = {
       id: employeeId,
       name: `Employee ${employeeId}`,
@@ -140,6 +161,12 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
         
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="text-red-500 text-sm text-center p-2 bg-red-50 rounded">
+                {error}
+              </div>
+            )}
+            
             <div className="space-y-2">
               <Label htmlFor="employeeId">Employee ID</Label>
               <Input
@@ -147,7 +174,7 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
                 type="text"
                 value={employeeId}
                 onChange={(e) => setEmployeeId(e.target.value)}
-                placeholder="Enter your employee ID"
+                placeholder="Enter your employee ID (Admin: 0001)"
                 required
               />
             </div>

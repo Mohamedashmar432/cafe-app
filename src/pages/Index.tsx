@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { LoginPage } from '@/components/auth/LoginPage';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 import { MenuView } from '@/components/menu/MenuView';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 
 export type User = {
@@ -41,21 +42,22 @@ export type OrderItem = {
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
-  const [currentView, setCurrentView] = useState<'login' | 'dashboard' | 'menu'>('login');
+  const [currentView, setCurrentView] = useState<'login' | 'dashboard' | 'menu' | 'admin'>('login');
 
   useEffect(() => {
     // Check if user is logged in (from localStorage)
     const savedUser = localStorage.getItem('cafeUser');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
-      setCurrentView('dashboard');
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      setCurrentView(userData.role === 'Admin' ? 'admin' : 'dashboard');
     }
   }, []);
 
   const handleLogin = (userData: User) => {
     setUser(userData);
     localStorage.setItem('cafeUser', JSON.stringify(userData));
-    setCurrentView('dashboard');
+    setCurrentView(userData.role === 'Admin' ? 'admin' : 'dashboard');
   };
 
   const handleLogout = () => {
@@ -71,7 +73,11 @@ const Index = () => {
   };
 
   const handleBackToDashboard = () => {
-    setCurrentView('dashboard');
+    if (user?.role === 'Admin') {
+      setCurrentView('admin');
+    } else {
+      setCurrentView('dashboard');
+    }
     setSelectedTable(null);
   };
 
@@ -87,6 +93,14 @@ const Index = () => {
             user={user}
             onLogout={handleLogout}
             onTableSelect={handleTableSelect}
+          />
+        )}
+
+        {currentView === 'admin' && user && (
+          <AdminDashboard
+            user={user}
+            onLogout={handleLogout}
+            onBack={() => setCurrentView('dashboard')}
           />
         )}
         

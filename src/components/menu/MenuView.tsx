@@ -1,10 +1,17 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, Plus, Minus, ShoppingCart, ChevronDown } from 'lucide-react';
 import { TopNavigation } from '@/components/dashboard/TopNavigation';
 import { OrderSummary } from './OrderSummary';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import type { User, Table, MenuItem, OrderItem } from '@/pages/Index';
 
 interface MenuViewProps {
@@ -144,29 +151,53 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
     }
   };
 
-  const MenuItemRow = ({ item }: { item: MenuItem }) => (
-    <tr className="border-b hover:bg-muted/50 transition-colors">
-      <td className="p-3">
-        <div className="flex items-center space-x-2">
-          <span className="text-lg">{item.icon}</span>
-          <span className="font-medium text-sm sm:text-base">{item.name}</span>
-        </div>
-      </td>
-      <td className="p-3">
-        <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs`}>
-          {item.subcategory}
-        </Badge>
-      </td>
-      <td className="p-3 font-semibold text-sm sm:text-base">
-        ${item.price.toFixed(2)}
-      </td>
-      <td className="p-3">
-        <Button onClick={() => addToOrder(item)} size="sm" className="text-xs">
-          <Plus className="h-3 w-3 mr-1" />
-          Add
-        </Button>
-      </td>
-    </tr>
+  const CategoryDropdown = ({ category, items }: { category: string; items: MenuItem[] }) => (
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg sm:text-xl bg-accent rounded-lg py-2 px-4">
+          {category}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-4 space-y-3">
+        {items.map(item => (
+          <DropdownMenu key={item.id}>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-between h-auto p-3 text-left"
+                size="lg"
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">{item.icon}</span>
+                  <div>
+                    <div className="font-medium text-sm sm:text-base">{item.name}</div>
+                    <div className="text-xs text-muted-foreground">${item.price.toFixed(2)}</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs`}>
+                    {item.subcategory}
+                  </Badge>
+                  <ChevronDown className="h-4 w-4" />
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem 
+                onClick={() => addToOrder(item)}
+                className="flex items-center justify-between cursor-pointer"
+              >
+                <span>Add to Order</span>
+                <div className="flex items-center space-x-1">
+                  <Plus className="h-3 w-3" />
+                  <span className="text-xs">${item.price.toFixed(2)}</span>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ))}
+      </CardContent>
+    </Card>
   );
 
   const categories = [...new Set(menuItems.map(item => item.category))];
@@ -204,37 +235,14 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-8">
-            {/* Menu Items - Left Side (Table View) */}
+            {/* Menu Items - Left Side (Dropdown View) */}
             <div className="xl:col-span-2 space-y-4 sm:space-y-6">
               {categories.map(category => (
-                <Card key={category} className="overflow-hidden">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg sm:text-xl bg-accent rounded-lg py-2 px-4">
-                      {category}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-muted/30">
-                          <tr>
-                            <th className="text-left p-3 font-medium text-sm">Item</th>
-                            <th className="text-left p-3 font-medium text-sm">Type</th>
-                            <th className="text-left p-3 font-medium text-sm">Price</th>
-                            <th className="text-left p-3 font-medium text-sm">Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {menuItems
-                            .filter(item => item.category === category)
-                            .map(item => (
-                              <MenuItemRow key={item.id} item={item} />
-                            ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardContent>
-                </Card>
+                <CategoryDropdown 
+                  key={category} 
+                  category={category} 
+                  items={menuItems.filter(item => item.category === category)} 
+                />
               ))}
             </div>
 
