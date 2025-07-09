@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,21 +19,85 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
   const menuItems: MenuItem[] = [
-    { id: '1', name: 'Espresso', price: 3.50, category: 'Coffee', subcategory: 'Strong', icon: '☕' },
-    { id: '2', name: 'Cappuccino', price: 4.25, category: 'Coffee', subcategory: 'Normal', icon: '☕' },
-    { id: '3', name: 'Latte', price: 4.75, category: 'Coffee', subcategory: 'Normal', icon: '☕' },
-    { id: '4', name: 'Mocha', price: 5.25, category: 'Coffee', subcategory: 'Special', icon: '☕' },
-    { id: '5', name: 'Americano', price: 3.75, category: 'Coffee', subcategory: 'Strong', icon: '☕' },
-    { id: '6', name: 'Caramel Macchiato', price: 5.50, category: 'Coffee', subcategory: 'Special', icon: '☕' },
-    { id: '7', name: 'Iced Coffee', price: 4.00, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
-    { id: '8', name: 'Frappuccino', price: 5.75, category: 'Cold Drinks', subcategory: 'Special', icon: '🧊' },
-    { id: '9', name: 'Green Tea', price: 3.25, category: 'Tea', subcategory: 'Less Sugar', icon: '🍵' },
-    { id: '10', name: 'Earl Grey', price: 3.50, category: 'Tea', subcategory: 'Normal', icon: '🍵' },
-    { id: '11', name: 'Croissant', price: 3.00, category: 'Pastries', subcategory: 'Normal', icon: '🥐' },
-    { id: '12', name: 'Muffin', price: 3.50, category: 'Pastries', subcategory: 'Normal', icon: '🧁' },
-    { id: '13', name: 'Cheesecake', price: 6.00, category: 'Desserts', subcategory: 'Special', icon: '🍰' },
-    { id: '14', name: 'Tiramisu', price: 6.50, category: 'Desserts', subcategory: 'Special', icon: '🍰' },
-    { id: '15', name: 'Caesar Salad', price: 8.50, category: 'Food', subcategory: 'Normal', icon: '🥗' },
+    // Famous Prata Items
+    { id: '1', name: 'Prata Kosong', price: 1.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '2', name: 'Prata Egg', price: 2.00, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '3', name: 'Prata Onion', price: 2.00, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '4', name: 'Prata Egg Onion', price: 2.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '5', name: 'Prata Tissue', price: 3.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '6', name: 'Milo Prata', price: 3.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '7', name: 'Prata Chocolate', price: 3.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '8', name: 'Prata Cheese', price: 3.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '9', name: 'Prata Mushroom', price: 3.00, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '10', name: 'Prata Cheese Mushroom', price: 4.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '11', name: 'Prata Egg Cheese', price: 3.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '12', name: 'Coin Prata Chicken', price: 4.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '13', name: 'Coin Prata Mutton', price: 5.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '14', name: 'Planta Prata', price: 2.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '15', name: 'Prata Hot Dog', price: 3.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '16', name: 'Kothu Prata', price: 4.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '17', name: 'Roti John', price: 3.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '18', name: 'Roti John Chicken', price: 4.50, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '19', name: 'Roti John Mutton', price: 5.00, category: 'Famous Prata Items', subcategory: 'Special', icon: '🥞' },
+    { id: '20', name: 'Roti John Sardines', price: 4.00, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '21', name: 'Roti John Tuna', price: 4.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+
+    // Goreng Items
+    { id: '22', name: 'Mee Goreng Chicken', price: 5.50, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '23', name: 'Mee Goreng Mutton', price: 6.00, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '24', name: 'Mee Hoon Goreng', price: 5.00, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '25', name: 'Mee Hoon Special', price: 6.50, category: 'Goreng Items', subcategory: 'Special', icon: '🍜' },
+    { id: '26', name: 'Keow Trow Goreng', price: 5.50, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '27', name: 'Maggi Goreng', price: 4.50, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '28', name: 'Maggi Goreng Double', price: 6.00, category: 'Goreng Items', subcategory: 'Special', icon: '🍜' },
+    { id: '29', name: 'Maggi Goreng Mutton', price: 6.00, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '30', name: 'Maggi Goreng Chicken', price: 5.50, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '31', name: 'Mee Kuah', price: 4.00, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '32', name: 'Nasi Goreng Meeran', price: 5.50, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '33', name: 'Nasi Goreng Ayam', price: 6.00, category: 'Goreng Items', subcategory: 'Normal', icon: '🍜' },
+    { id: '34', name: 'Nasi Goreng Combo', price: 7.50, category: 'Goreng Items', subcategory: 'Special', icon: '🍜' },
+
+    // Biryani
+    { id: '35', name: 'Chicken Biryani', price: 8.50, category: 'Biryani', subcategory: 'Normal', icon: '🍛' },
+    { id: '36', name: 'Mutton Biryani', price: 10.00, category: 'Biryani', subcategory: 'Normal', icon: '🍛' },
+    { id: '37', name: 'Special Biryani', price: 12.00, category: 'Biryani', subcategory: 'Special', icon: '🍛' },
+
+    // Thosai
+    { id: '38', name: 'Normal Thosai', price: 2.00, category: 'Thosai', subcategory: 'Normal', icon: '🥘' },
+    { id: '39', name: 'Roast Thosai', price: 2.50, category: 'Thosai', subcategory: 'Normal', icon: '🥘' },
+    { id: '40', name: 'Egg Thosai', price: 3.00, category: 'Thosai', subcategory: 'Normal', icon: '🥘' },
+    { id: '41', name: 'Chicken Thosai', price: 4.00, category: 'Thosai', subcategory: 'Special', icon: '🥘' },
+    { id: '42', name: 'Mutton Thosai', price: 4.50, category: 'Thosai', subcategory: 'Special', icon: '🥘' },
+    { id: '43', name: 'Onion Thosai', price: 3.00, category: 'Thosai', subcategory: 'Normal', icon: '🥘' },
+
+    // Coffees
+    { id: '44', name: 'Kopi', price: 1.50, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+    { id: '45', name: 'Kopi O', price: 1.30, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+    { id: '46', name: 'Kopi C', price: 1.70, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+    { id: '47', name: 'Kopi Peng', price: 1.80, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+    { id: '48', name: 'Kopi O Peng', price: 1.60, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+    { id: '49', name: 'Kopi C Peng', price: 2.00, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+
+    // Cold Drinks
+    { id: '50', name: 'Milo', price: 2.00, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
+    { id: '51', name: 'Milo Peng', price: 2.50, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
+    { id: '52', name: 'Lime Juice', price: 2.50, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
+    { id: '53', name: 'Orange Juice', price: 3.00, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
+    { id: '54', name: 'Bandung', price: 2.50, category: 'Cold Drinks', subcategory: 'Special', icon: '🧊' },
+    { id: '55', name: 'Teh Tarik Peng', price: 2.00, category: 'Cold Drinks', subcategory: 'Normal', icon: '🧊' },
+
+    // Teas
+    { id: '56', name: 'Teh', price: 1.50, category: 'Teas', subcategory: 'Normal', icon: '🍵' },
+    { id: '57', name: 'Teh O', price: 1.30, category: 'Teas', subcategory: 'Normal', icon: '🍵' },
+    { id: '58', name: 'Teh C', price: 1.70, category: 'Teas', subcategory: 'Normal', icon: '🍵' },
+    { id: '59', name: 'Teh Tarik', price: 2.00, category: 'Teas', subcategory: 'Special', icon: '🍵' },
+    { id: '60', name: 'Teh Halia', price: 2.00, category: 'Teas', subcategory: 'Special', icon: '🍵' },
+
+    // Desserts
+    { id: '61', name: 'Ice Cream', price: 3.00, category: 'Desserts', subcategory: 'Normal', icon: '🍨' },
+    { id: '62', name: 'Cendol', price: 3.50, category: 'Desserts', subcategory: 'Special', icon: '🍨' },
+    { id: '63', name: 'Ice Kacang', price: 4.00, category: 'Desserts', subcategory: 'Special', icon: '🍨' },
+    { id: '64', name: 'Pulut Hitam', price: 3.50, category: 'Desserts', subcategory: 'Special', icon: '🍨' },
   ];
 
   const addToOrder = (menuItem: MenuItem) => {
@@ -81,32 +144,29 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
     }
   };
 
-  const MenuItemCard = ({ item }: { item: MenuItem }) => (
-    <Card className="cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg w-full">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-base sm:text-lg flex items-center space-x-2 min-w-0">
-            <span className="text-xl sm:text-2xl shrink-0">{item.icon}</span>
-            <span className="truncate">{item.name}</span>
-          </CardTitle>
-          <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs shrink-0`}>
-            {item.subcategory}
-          </Badge>
+  const MenuItemRow = ({ item }: { item: MenuItem }) => (
+    <tr className="border-b hover:bg-muted/50 transition-colors">
+      <td className="p-3">
+        <div className="flex items-center space-x-2">
+          <span className="text-lg">{item.icon}</span>
+          <span className="font-medium text-sm sm:text-base">{item.name}</span>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-xs sm:text-sm text-muted-foreground truncate">{item.category}</p>
-            <p className="text-base sm:text-lg font-bold">${item.price.toFixed(2)}</p>
-          </div>
-          <Button onClick={() => addToOrder(item)} size="sm" className="shrink-0">
-            <Plus className="h-4 w-4 mr-1" />
-            Add
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      </td>
+      <td className="p-3">
+        <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs`}>
+          {item.subcategory}
+        </Badge>
+      </td>
+      <td className="p-3 font-semibold text-sm sm:text-base">
+        ${item.price.toFixed(2)}
+      </td>
+      <td className="p-3">
+        <Button onClick={() => addToOrder(item)} size="sm" className="text-xs">
+          <Plus className="h-3 w-3 mr-1" />
+          Add
+        </Button>
+      </td>
+    </tr>
   );
 
   const categories = [...new Set(menuItems.map(item => item.category))];
@@ -144,21 +204,37 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-8">
-            {/* Menu Items - Left Side */}
+            {/* Menu Items - Left Side (Table View) */}
             <div className="xl:col-span-2 space-y-4 sm:space-y-6">
               {categories.map(category => (
-                <div key={category}>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 bg-accent rounded-lg py-2 px-4">
-                    {category}
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    {menuItems
-                      .filter(item => item.category === category)
-                      .map(item => (
-                        <MenuItemCard key={item.id} item={item} />
-                      ))}
-                  </div>
-                </div>
+                <Card key={category} className="overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg sm:text-xl bg-accent rounded-lg py-2 px-4">
+                      {category}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-muted/30">
+                          <tr>
+                            <th className="text-left p-3 font-medium text-sm">Item</th>
+                            <th className="text-left p-3 font-medium text-sm">Type</th>
+                            <th className="text-left p-3 font-medium text-sm">Price</th>
+                            <th className="text-left p-3 font-medium text-sm">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {menuItems
+                            .filter(item => item.category === category)
+                            .map(item => (
+                              <MenuItemRow key={item.id} item={item} />
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
