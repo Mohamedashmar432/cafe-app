@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +13,9 @@ import {
   Trash2, 
   ArrowLeft,
   Eye,
-  EyeOff
+  EyeOff,
+  ChefHat,
+  Plus
 } from 'lucide-react';
 import { TopNavigation } from '@/components/dashboard/TopNavigation';
 import type { User } from '@/pages/Index';
@@ -39,6 +42,15 @@ interface Order {
   total: number;
   status: 'Pending' | 'Completed' | 'Cancelled';
   timestamp: Date;
+}
+
+interface MenuItemType {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  subcategory: 'Special' | 'Strong' | 'Less Sugar' | 'Normal';
+  icon: string;
 }
 
 export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) => {
@@ -71,12 +83,37 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
     },
   ]);
 
+  const [menuItems, setMenuItems] = useState<MenuItemType[]>([
+    { id: '1', name: 'Prata Kosong', price: 1.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
+    { id: '2', name: 'Chicken Biryani', price: 8.50, category: 'Biryani', subcategory: 'Normal', icon: '🍛' },
+    { id: '3', name: 'Kopi', price: 1.50, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
+  ]);
+
   const [newEmployee, setNewEmployee] = useState({
     name: '',
     employeeId: '',
     password: '',
     role: 'Waiter' as 'Admin' | 'Waiter' | 'Cashier'
   });
+
+  const [newMenuItem, setNewMenuItem] = useState({
+    name: '',
+    price: '',
+    category: '',
+    subcategory: 'Normal' as 'Special' | 'Strong' | 'Less Sugar' | 'Normal',
+    icon: '🍽️'
+  });
+
+  const categories = [
+    'Famous Prata Items',
+    'Goreng Items', 
+    'Biryani',
+    'Thosai',
+    'Coffees',
+    'Cold Drinks',
+    'Teas',
+    'Desserts'
+  ];
 
   const handleAddEmployee = () => {
     if (newEmployee.name && newEmployee.employeeId && newEmployee.password) {
@@ -92,8 +129,27 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
     }
   };
 
+  const handleAddMenuItem = () => {
+    if (newMenuItem.name && newMenuItem.price && newMenuItem.category) {
+      const menuItem: MenuItemType = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: newMenuItem.name,
+        price: parseFloat(newMenuItem.price),
+        category: newMenuItem.category,
+        subcategory: newMenuItem.subcategory,
+        icon: newMenuItem.icon
+      };
+      setMenuItems([...menuItems, menuItem]);
+      setNewMenuItem({ name: '', price: '', category: '', subcategory: 'Normal', icon: '🍽️' });
+    }
+  };
+
   const handleDeleteEmployee = (id: string) => {
     setEmployees(employees.filter(emp => emp.id !== id));
+  };
+
+  const handleDeleteMenuItem = (id: string) => {
+    setMenuItems(menuItems.filter(item => item.id !== id));
   };
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
@@ -273,6 +329,129 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                 <Button onClick={handleAddEmployee} className="w-full bg-green-600 hover:bg-green-700 font-semibold">
                   Add Employee
                 </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Add Menu Item Section */}
+            <Card className="border-2 border-orange-200">
+              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100">
+                <CardTitle className="flex items-center space-x-2 text-orange-800">
+                  <ChefHat className="h-5 w-5" />
+                  <span>Add Menu Item</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="itemName" className="text-gray-700 font-medium">Item Name</Label>
+                  <Input
+                    id="itemName"
+                    value={newMenuItem.name}
+                    onChange={(e) => setNewMenuItem({...newMenuItem, name: e.target.value})}
+                    placeholder="Item name"
+                    className="border-gray-300 focus:border-orange-500"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="itemPrice" className="text-gray-700 font-medium">Price ($)</Label>
+                  <Input
+                    id="itemPrice"
+                    type="number"
+                    step="0.01"
+                    value={newMenuItem.price}
+                    onChange={(e) => setNewMenuItem({...newMenuItem, price: e.target.value})}
+                    placeholder="0.00"
+                    className="border-gray-300 focus:border-orange-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="itemCategory" className="text-gray-700 font-medium">Category</Label>
+                  <select
+                    id="itemCategory"
+                    value={newMenuItem.category}
+                    onChange={(e) => setNewMenuItem({...newMenuItem, category: e.target.value})}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="itemSubcategory" className="text-gray-700 font-medium">Subcategory</Label>
+                  <select
+                    id="itemSubcategory"
+                    value={newMenuItem.subcategory}
+                    onChange={(e) => setNewMenuItem({...newMenuItem, subcategory: e.target.value as 'Special' | 'Strong' | 'Less Sugar' | 'Normal'})}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none"
+                  >
+                    <option value="Normal">Normal</option>
+                    <option value="Special">Special</option>
+                    <option value="Strong">Strong</option>
+                    <option value="Less Sugar">Less Sugar</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="itemIcon" className="text-gray-700 font-medium">Icon (Emoji)</Label>
+                  <Input
+                    id="itemIcon"
+                    value={newMenuItem.icon}
+                    onChange={(e) => setNewMenuItem({...newMenuItem, icon: e.target.value})}
+                    placeholder="🍽️"
+                    className="border-gray-300 focus:border-orange-500"
+                  />
+                </div>
+
+                <Button onClick={handleAddMenuItem} className="w-full bg-orange-600 hover:bg-orange-700 font-semibold">
+                  Add Menu Item
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Menu Items List */}
+            <Card className="border-2 border-purple-200">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100">
+                <CardTitle className="text-purple-800">Menu Items</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 max-h-96 overflow-y-auto">
+                {menuItems.map((item, index) => (
+                  <div key={item.id} className={`border rounded-lg p-3 ${index % 2 === 0 ? 'bg-purple-50' : 'bg-white'} hover:bg-purple-100 transition-colors`}>
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center space-x-3 flex-1">
+                        <span className="text-lg">{item.icon}</span>
+                        <div>
+                          <h4 className="font-bold text-purple-800">{item.name}</h4>
+                          <p className="text-sm text-purple-600">{item.category}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="font-bold text-green-700">${item.price.toFixed(2)}</span>
+                            <Badge className={`text-xs ${
+                              item.subcategory === 'Special' ? 'bg-purple-100 text-purple-800' :
+                              item.subcategory === 'Strong' ? 'bg-red-100 text-red-800' :
+                              item.subcategory === 'Less Sugar' ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {item.subcategory}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteMenuItem(item.id)}
+                        className="border-red-300 text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </div>
