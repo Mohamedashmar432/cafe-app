@@ -118,14 +118,16 @@ export const OrderSummary = ({
   };
 
   return (
-    <Card className="sticky top-4 w-full">
-      <CardHeader>
+    <Card className="w-full border-2 border-blue-200">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
         <CardTitle className="flex items-center justify-between flex-wrap gap-2">
-          <span className="text-lg sm:text-xl">Order Summary</span>
+          <span className="text-lg sm:text-xl text-blue-800">Order Summary</span>
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="outline" className="text-xs sm:text-sm">Table {table.number}</Badge>
+            <Badge variant="outline" className="text-xs sm:text-sm bg-blue-600 text-white border-blue-600">
+              Table {table.number}
+            </Badge>
             {totalItems > 0 && (
-              <Badge variant="secondary" className="text-xs sm:text-sm">
+              <Badge variant="secondary" className="text-xs sm:text-sm bg-green-100 text-green-800 border-green-300">
                 {totalItems} item{totalItems !== 1 ? 's' : ''}
               </Badge>
             )}
@@ -136,19 +138,19 @@ export const OrderSummary = ({
       <CardContent className="space-y-4">
         {orderItems.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            <p>No items in order</p>
-            <p className="text-sm">Select items from the menu to add them here</p>
+            <p className="text-gray-600">No items in order</p>
+            <p className="text-sm text-gray-500">Select items from the menu to add them here</p>
           </div>
         ) : (
           <>
             {/* Order Items */}
             <div className="space-y-3 max-h-60 sm:max-h-80 overflow-y-auto">
               {orderItems.map((item) => (
-                <div key={item.id} className="space-y-2">
+                <div key={item.id} className="space-y-2 p-3 bg-gray-50 rounded-lg border">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{item.menuItem.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="font-medium text-sm truncate text-gray-800">{item.menuItem.name}</p>
+                      <p className="text-sm font-semibold text-blue-600">
                         ${item.menuItem.price.toFixed(2)} each
                       </p>
                     </div>
@@ -156,16 +158,16 @@ export const OrderSummary = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 border-red-300 text-red-600 hover:bg-red-50"
                         onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                       >
                         <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="w-8 text-center text-sm">{item.quantity}</span>
+                      <span className="w-8 text-center text-sm font-bold bg-white px-2 py-1 rounded border">{item.quantity}</span>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 border-green-300 text-green-600 hover:bg-green-50"
                         onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                       >
                         <Plus className="h-3 w-3" />
@@ -175,7 +177,7 @@ export const OrderSummary = ({
                   
                   {/* Modifiers */}
                   <div className="space-y-2">
-                    <Label className="text-xs">Modifiers:</Label>
+                    <Label className="text-xs text-gray-600">Modifiers:</Label>
                     <Select
                       value={modifiers[item.id] || ''}
                       onValueChange={(value) => handleModifierChange(item.id, value)}
@@ -195,13 +197,13 @@ export const OrderSummary = ({
                     </Select>
                   </div>
                   
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal:</span>
-                    <span>${(item.menuItem.price * item.quantity).toFixed(2)}</span>
+                  <div className="flex justify-between text-sm bg-white p-2 rounded">
+                    <span className="text-gray-600">Subtotal:</span>
+                    <span className="font-bold text-blue-600">${(item.menuItem.price * item.quantity).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>GST:</span>
-                    <span>${(item.gst * item.quantity).toFixed(2)}</span>
+                  <div className="flex justify-between text-sm bg-white p-2 rounded">
+                    <span className="text-gray-600">GST:</span>
+                    <span className="font-semibold text-orange-600">${(item.gst * item.quantity).toFixed(2)}</span>
                   </div>
                   
                   <Separator />
@@ -210,60 +212,60 @@ export const OrderSummary = ({
             </div>
 
             {/* Totals */}
-            <div className="space-y-2 pt-4 border-t">
+            <div className="space-y-3 pt-4 border-t-2 border-gray-200 bg-gradient-to-b from-gray-50 to-white p-4 rounded-lg">
               <div className="flex justify-between text-sm">
-                <span>Total Items:</span>
-                <span className="font-medium">{totalItems}</span>
+                <span className="text-gray-700 font-medium">Total Items:</span>
+                <span className="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">{totalItems}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Subtotal:</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span className="text-gray-700 font-medium">Subtotal:</span>
+                <span className="font-bold text-blue-600">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>GST (10%):</span>
-                <span>${totalGst.toFixed(2)}</span>
+                <span className="text-gray-700 font-medium">GST (10%):</span>
+                <span className="font-bold text-orange-600">${totalGst.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-base sm:text-lg">
-                <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
+              <div className="flex justify-between font-bold text-lg border-t pt-2">
+                <span className="text-gray-800">TOTAL:</span>
+                <span className="text-green-700 bg-green-100 px-3 py-1 rounded-lg">${total.toFixed(2)}</span>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="space-y-2 pt-4">
               <div className="grid grid-cols-2 gap-2">
-                <Button onClick={handleConfirmOrder} className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm">
+                <Button onClick={handleConfirmOrder} className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm font-semibold">
                   <Check className="h-4 w-4 mr-1" />
-                  Confirm
+                  Confirm Order
                 </Button>
-                <Button variant="outline" onClick={onClearOrder} className="text-xs sm:text-sm">
+                <Button variant="outline" onClick={onClearOrder} className="text-xs sm:text-sm border-red-300 text-red-600 hover:bg-red-50">
                   <RotateCcw className="h-4 w-4 mr-1" />
-                  Clear
+                  Clear All
                 </Button>
               </div>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={handleHoldOrder} className="text-xs sm:text-sm">
+                <Button variant="outline" onClick={handleHoldOrder} className="text-xs sm:text-sm border-yellow-300 text-yellow-700 hover:bg-yellow-50">
                   <Clock className="h-4 w-4 mr-1" />
-                  Hold
+                  Hold Order
                 </Button>
-                <Button variant="outline" onClick={handleCheckout} className="text-xs sm:text-sm">
+                <Button variant="outline" onClick={handleCheckout} className="text-xs sm:text-sm border-blue-300 text-blue-600 hover:bg-blue-50">
                   <CreditCard className="h-4 w-4 mr-1" />
                   Checkout
                 </Button>
               </div>
               
-              <Button className="w-full text-xs sm:text-sm" onClick={handlePayment}>
+              <Button className="w-full text-xs sm:text-sm bg-purple-600 hover:bg-purple-700 font-semibold" onClick={handlePayment}>
                 <DollarSign className="h-4 w-4 mr-1" />
-                Payment
+                Process Payment
               </Button>
               
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={handleMergeBills} className="text-xs sm:text-sm">
+                <Button variant="outline" onClick={handleMergeBills} className="text-xs sm:text-sm border-gray-300 text-gray-600 hover:bg-gray-50">
                   <Merge className="h-4 w-4 mr-1" />
                   Merge Bills
                 </Button>
-                <Button variant="outline" onClick={handleSplitBills} className="text-xs sm:text-sm">
+                <Button variant="outline" onClick={handleSplitBills} className="text-xs sm:text-sm border-gray-300 text-gray-600 hover:bg-gray-50">
                   <Split className="h-4 w-4 mr-1" />
                   Split Bills
                 </Button>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -195,26 +194,32 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 shrink-0">
-              <ShoppingCart className="h-4 sm:h-5 w-4 sm:w-5" />
-              <span className="font-semibold text-sm sm:text-base">{orderItems.length}</span>
+            <div className="flex items-center space-x-2 shrink-0 bg-blue-50 px-3 py-2 rounded-lg border">
+              <ShoppingCart className="h-4 sm:h-5 w-4 sm:w-5 text-blue-600" />
+              <span className="font-semibold text-sm sm:text-base text-blue-800">{orderItems.length}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-8">
-            {/* Menu Items - Left Side */}
-            <div className="xl:col-span-2 space-y-4 sm:space-y-6">
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
+            {/* Menu Items - Left Side (3/5 width) */}
+            <div className="lg:col-span-3 space-y-4">
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">Menu Categories</h2>
+                <p className="text-sm text-gray-600">Select items to add to your order</p>
+              </div>
+              
               {Object.entries(menuCategories).map(([category, items]) => (
-                <Card key={category} className="overflow-hidden">
+                <Card key={category} className="overflow-hidden border-l-4 border-l-blue-500">
                   <Collapsible 
                     open={openCategories.includes(category)}
                     onOpenChange={() => toggleCategory(category)}
                   >
                     <CollapsibleTrigger asChild>
-                      <CardHeader className="pb-2 cursor-pointer hover:bg-accent/50 transition-colors">
-                        <CardTitle className="text-lg sm:text-xl flex items-center justify-between">
-                          <span className="bg-accent rounded-lg py-2 px-4">{category}</span>
-                          <ChevronDown className={`h-5 w-5 transition-transform ${openCategories.includes(category) ? 'rotate-180' : ''}`} />
+                      <CardHeader className="pb-2 cursor-pointer hover:bg-accent/50 transition-colors bg-gradient-to-r from-blue-50 to-transparent">
+                        <CardTitle className="text-base sm:text-lg flex items-center justify-between">
+                          <span className="bg-blue-600 text-white rounded-lg py-2 px-4 font-medium">{category}</span>
+                          <ChevronDown className={`h-5 w-5 transition-transform text-blue-600 ${openCategories.includes(category) ? 'rotate-180' : ''}`} />
                         </CardTitle>
                       </CardHeader>
                     </CollapsibleTrigger>
@@ -223,23 +228,23 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
                         {items.map(item => (
                           <div 
                             key={item.id}
-                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/30 transition-colors"
+                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/30 transition-colors hover:border-blue-300"
                           >
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center space-x-3 flex-1">
                               <span className="text-lg">{item.icon}</span>
-                              <div>
-                                <div className="font-medium text-sm sm:text-base">{item.name}</div>
-                                <div className="text-xs text-muted-foreground">${item.price.toFixed(2)}</div>
+                              <div className="flex-1">
+                                <div className="font-medium text-sm sm:text-base text-gray-800">{item.name}</div>
+                                <div className="text-lg font-bold text-green-600">${item.price.toFixed(2)}</div>
                               </div>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs`}>
+                              <Badge className={`${getSubcategoryColor(item.subcategory)} text-xs border-0`}>
                                 {item.subcategory}
                               </Badge>
                               <Button
                                 size="sm"
                                 onClick={() => addToOrder(item, category)}
-                                className="h-8 w-8 p-0"
+                                className="h-8 w-8 p-0 bg-green-600 hover:bg-green-700"
                               >
                                 <Plus className="h-3 w-3" />
                               </Button>
@@ -253,14 +258,16 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
               ))}
             </div>
 
-            {/* Order Summary - Right Side */}
-            <div className="xl:col-span-1">
-              <OrderSummary
-                table={table}
-                orderItems={orderItems}
-                onUpdateQuantity={updateQuantity}
-                onClearOrder={() => setOrderItems([])}
-              />
+            {/* Order Summary - Right Side (2/5 width) */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-4">
+                <OrderSummary
+                  table={table}
+                  orderItems={orderItems}
+                  onUpdateQuantity={updateQuantity}
+                  onClearOrder={() => setOrderItems([])}
+                />
+              </div>
             </div>
           </div>
         </div>

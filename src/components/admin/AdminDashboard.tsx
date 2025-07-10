@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -115,85 +114,88 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button variant="outline" onClick={onBack}>
+              <Button variant="outline" onClick={onBack} className="border-blue-300 text-blue-600 hover:bg-blue-50">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Button>
               <div>
-                <h1 className="text-2xl md:text-4xl font-bold">Admin Dashboard</h1>
-                <p className="text-muted-foreground">Manage your cafe operations</p>
+                <h1 className="text-2xl md:text-4xl font-bold text-gray-800">Admin Dashboard</h1>
+                <p className="text-gray-600">Manage your cafe operations</p>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <Card>
+            <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-blue-100">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Receipt className="h-8 w-8 text-blue-600" />
                 </div>
-                <div className="text-2xl font-bold text-blue-800">{orders.length}</div>
-                <div className="text-sm text-blue-600">Total Orders</div>
+                <div className="text-3xl font-bold text-blue-800">{orders.length}</div>
+                <div className="text-sm text-blue-600 font-medium">Total Orders</div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-l-green-500 bg-gradient-to-br from-green-50 to-green-100">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Users className="h-8 w-8 text-green-600" />
                 </div>
-                <div className="text-2xl font-bold text-green-800">{employees.length}</div>
-                <div className="text-sm text-green-600">Employees</div>
+                <div className="text-3xl font-bold text-green-800">{employees.length}</div>
+                <div className="text-sm text-green-600 font-medium">Employees</div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50 to-purple-100">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <DollarSign className="h-8 w-8 text-purple-600" />
                 </div>
-                <div className="text-2xl font-bold text-purple-800">${totalRevenue.toFixed(2)}</div>
-                <div className="text-sm text-purple-600">Total Revenue</div>
+                <div className="text-3xl font-bold text-purple-800">${totalRevenue.toFixed(2)}</div>
+                <div className="text-sm text-purple-600 font-medium">Total Revenue</div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50 to-orange-100">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Receipt className="h-8 w-8 text-orange-600" />
                 </div>
-                <div className="text-2xl font-bold text-orange-800">{pendingOrders}</div>
-                <div className="text-sm text-orange-600">Pending Orders</div>
+                <div className="text-3xl font-bold text-orange-800">{pendingOrders}</div>
+                <div className="text-sm text-orange-600 font-medium">Pending Orders</div>
               </CardContent>
             </Card>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Orders Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Orders</CardTitle>
+            <Card className="border-2 border-gray-200">
+              <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
+                <CardTitle className="text-gray-800">Recent Orders</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {orders.map(order => (
-                  <div key={order.id} className="border rounded-lg p-4">
+                  <div key={order.id} className="border rounded-lg p-4 bg-gradient-to-r from-white to-gray-50">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h4 className="font-semibold">Table {order.tableNumber}</h4>
-                        <p className="text-sm text-muted-foreground">
+                        <h4 className="font-bold text-gray-800">Table {order.tableNumber}</h4>
+                        <p className="text-sm text-blue-600 font-medium">
                           Employee: {order.employeeId}
                         </p>
                       </div>
                       <Badge 
                         variant={order.status === 'Completed' ? 'default' : 'secondary'}
+                        className={order.status === 'Completed' 
+                          ? 'bg-green-100 text-green-800 border-green-300' 
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-300'}
                       >
                         {order.status}
                       </Badge>
                     </div>
                     <div className="text-sm">
-                      <p>Items: {order.items.join(', ')}</p>
-                      <p className="font-semibold mt-1">Total: ${order.total.toFixed(2)}</p>
+                      <p className="text-gray-700">Items: {order.items.join(', ')}</p>
+                      <p className="font-bold mt-1 text-lg text-green-700">Total: ${order.total.toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -201,36 +203,38 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
             </Card>
 
             {/* Add Employee Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+            <Card className="border-2 border-blue-200">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
+                <CardTitle className="flex items-center space-x-2 text-blue-800">
                   <UserPlus className="h-5 w-5" />
                   <span>Add New Employee</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" className="text-gray-700 font-medium">Name</Label>
                   <Input
                     id="name"
                     value={newEmployee.name}
                     onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})}
                     placeholder="Employee name"
+                    className="border-gray-300 focus:border-blue-500"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="employeeId">Employee ID</Label>
+                  <Label htmlFor="employeeId" className="text-gray-700 font-medium">Employee ID</Label>
                   <Input
                     id="employeeId"
                     value={newEmployee.employeeId}
                     onChange={(e) => setNewEmployee({...newEmployee, employeeId: e.target.value})}
                     placeholder="0004"
+                    className="border-gray-300 focus:border-blue-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
@@ -238,12 +242,13 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                       value={newEmployee.password}
                       onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})}
                       placeholder="Enter password"
+                      className="border-gray-300 focus:border-blue-500"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-blue-50"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -252,12 +257,12 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
+                  <Label htmlFor="role" className="text-gray-700 font-medium">Role</Label>
                   <select
                     id="role"
                     value={newEmployee.role}
                     onChange={(e) => setNewEmployee({...newEmployee, role: e.target.value as 'Admin' | 'Waiter' | 'Cashier'})}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
                   >
                     <option value="Waiter">Waiter</option>
                     <option value="Cashier">Cashier</option>
@@ -265,7 +270,7 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                   </select>
                 </div>
 
-                <Button onClick={handleAddEmployee} className="w-full">
+                <Button onClick={handleAddEmployee} className="w-full bg-green-600 hover:bg-green-700 font-semibold">
                   Add Employee
                 </Button>
               </CardContent>
@@ -273,43 +278,52 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
           </div>
 
           {/* Employees List */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Employee Management</CardTitle>
+          <Card className="border-2 border-gray-200">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
+              <CardTitle className="text-gray-800">Employee Management</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2">Name</th>
-                      <th className="text-left p-2">Employee ID</th>
-                      <th className="text-left p-2">Role</th>
-                      <th className="text-left p-2">Status</th>
-                      <th className="text-left p-2">Actions</th>
+                    <tr className="border-b-2 border-gray-200 bg-gray-50">
+                      <th className="text-left p-3 font-semibold text-gray-700">Name</th>
+                      <th className="text-left p-3 font-semibold text-gray-700">Employee ID</th>
+                      <th className="text-left p-3 font-semibold text-gray-700">Role</th>
+                      <th className="text-left p-3 font-semibold text-gray-700">Status</th>
+                      <th className="text-left p-3 font-semibold text-gray-700">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.map(employee => (
-                      <tr key={employee.id} className="border-b">
-                        <td className="p-2">{employee.name}</td>
-                        <td className="p-2">{employee.employeeId}</td>
-                        <td className="p-2">
-                          <Badge variant="outline">{employee.role}</Badge>
+                    {employees.map((employee, index) => (
+                      <tr key={employee.id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                        <td className="p-3 font-medium text-gray-800">{employee.name}</td>
+                        <td className="p-3 text-blue-600 font-semibold">{employee.employeeId}</td>
+                        <td className="p-3">
+                          <Badge 
+                            variant="outline" 
+                            className={employee.role === 'Admin' ? 'bg-purple-100 text-purple-800 border-purple-300' : 
+                                      employee.role === 'Waiter' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                                      'bg-green-100 text-green-800 border-green-300'}
+                          >
+                            {employee.role}
+                          </Badge>
                         </td>
-                        <td className="p-2">
+                        <td className="p-3">
                           <Badge 
                             variant={employee.status === 'Active' ? 'default' : 'secondary'}
+                            className={employee.status === 'Active' ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-800 border-gray-300'}
                           >
                             {employee.status}
                           </Badge>
                         </td>
-                        <td className="p-2">
+                        <td className="p-3">
                           {employee.employeeId !== '0001' && (
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleDeleteEmployee(employee.id)}
+                              className="border-red-300 text-red-600 hover:bg-red-50"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
