@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import type { User, Table, MenuItem, OrderItem } from '@/pages/Index';
+import { api } from '@/lib/api';
 
 interface MenuViewProps {
   user: User;
@@ -23,89 +24,24 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
+  const [menuCategories, setMenuCategories] = useState<Record<string, any[]>>({});
+  const [loading, setLoading] = useState(true);
 
-  const menuCategories = {
-    'Famous Prata Items': [
-      { id: '1', name: 'Prata Kosong', price: 1.50, subcategory: 'Normal', icon: '🥞' },
-      { id: '2', name: 'Prata Egg', price: 2.00, subcategory: 'Normal', icon: '🥞' },
-      { id: '3', name: 'Prata Onion', price: 2.00, subcategory: 'Normal', icon: '🥞' },
-      { id: '4', name: 'Prata Egg Onion', price: 2.50, subcategory: 'Normal', icon: '🥞' },
-      { id: '5', name: 'Prata Tissue', price: 3.50, subcategory: 'Special', icon: '🥞' },
-      { id: '6', name: 'Milo Prata', price: 3.00, subcategory: 'Special', icon: '🥞' },
-      { id: '7', name: 'Prata Chocolate', price: 3.00, subcategory: 'Special', icon: '🥞' },
-      { id: '8', name: 'Prata Cheese', price: 3.50, subcategory: 'Special', icon: '🥞' },
-      { id: '9', name: 'Prata Mushroom', price: 3.00, subcategory: 'Normal', icon: '🥞' },
-      { id: '10', name: 'Prata Cheese Mushroom', price: 4.00, subcategory: 'Special', icon: '🥞' },
-      { id: '11', name: 'Prata Egg Cheese', price: 3.50, subcategory: 'Special', icon: '🥞' },
-      { id: '12', name: 'Coin Prata Chicken', price: 4.50, subcategory: 'Special', icon: '🥞' },
-      { id: '13', name: 'Coin Prata Mutton', price: 5.00, subcategory: 'Special', icon: '🥞' },
-      { id: '14', name: 'Planta Prata', price: 2.50, subcategory: 'Normal', icon: '🥞' },
-      { id: '15', name: 'Prata Hot Dog', price: 3.50, subcategory: 'Special', icon: '🥞' },
-      { id: '16', name: 'Kothu Prata', price: 4.00, subcategory: 'Special', icon: '🥞' },
-      { id: '17', name: 'Roti John', price: 3.50, subcategory: 'Normal', icon: '🥞' },
-      { id: '18', name: 'Roti John Chicken', price: 4.50, subcategory: 'Special', icon: '🥞' },
-      { id: '19', name: 'Roti John Mutton', price: 5.00, subcategory: 'Special', icon: '🥞' },
-      { id: '20', name: 'Roti John Sardines', price: 4.00, subcategory: 'Normal', icon: '🥞' },
-      { id: '21', name: 'Roti John Tuna', price: 4.50, subcategory: 'Normal', icon: '🥞' },
-    ],
-    'Goreng Items': [
-      { id: '22', name: 'Mee Goreng Chicken', price: 5.50, subcategory: 'Normal', icon: '🍜' },
-      { id: '23', name: 'Mee Goreng Mutton', price: 6.00, subcategory: 'Normal', icon: '🍜' },
-      { id: '24', name: 'Mee Hoon Goreng', price: 5.00, subcategory: 'Normal', icon: '🍜' },
-      { id: '25', name: 'Mee Hoon Special', price: 6.50, subcategory: 'Special', icon: '🍜' },
-      { id: '26', name: 'Keow Trow Goreng', price: 5.50, subcategory: 'Normal', icon: '🍜' },
-      { id: '27', name: 'Maggi Goreng', price: 4.50, subcategory: 'Normal', icon: '🍜' },
-      { id: '28', name: 'Maggi Goreng Double', price: 6.00, subcategory: 'Special', icon: '🍜' },
-      { id: '29', name: 'Maggi Goreng Mutton', price: 6.00, subcategory: 'Normal', icon: '🍜' },
-      { id: '30', name: 'Maggi Goreng Chicken', price: 5.50, subcategory: 'Normal', icon: '🍜' },
-      { id: '31', name: 'Mee Kuah', price: 4.00, subcategory: 'Normal', icon: '🍜' },
-      { id: '32', name: 'Nasi Goreng Meeran', price: 5.50, subcategory: 'Normal', icon: '🍜' },
-      { id: '33', name: 'Nasi Goreng Ayam', price: 6.00, subcategory: 'Normal', icon: '🍜' },
-      { id: '34', name: 'Nasi Goreng Combo', price: 7.50, subcategory: 'Special', icon: '🍜' },
-    ],
-    'Biryani': [
-      { id: '35', name: 'Chicken Biryani', price: 8.50, subcategory: 'Normal', icon: '🍛' },
-      { id: '36', name: 'Mutton Biryani', price: 10.00, subcategory: 'Normal', icon: '🍛' },
-      { id: '37', name: 'Special Biryani', price: 12.00, subcategory: 'Special', icon: '🍛' },
-    ],
-    'Thosai': [
-      { id: '38', name: 'Normal Thosai', price: 2.00, subcategory: 'Normal', icon: '🥘' },
-      { id: '39', name: 'Roast Thosai', price: 2.50, subcategory: 'Normal', icon: '🥘' },
-      { id: '40', name: 'Egg Thosai', price: 3.00, subcategory: 'Normal', icon: '🥘' },
-      { id: '41', name: 'Chicken Thosai', price: 4.00, subcategory: 'Special', icon: '🥘' },
-      { id: '42', name: 'Mutton Thosai', price: 4.50, subcategory: 'Special', icon: '🥘' },
-      { id: '43', name: 'Onion Thosai', price: 3.00, subcategory: 'Normal', icon: '🥘' },
-    ],
-    'Coffees': [
-      { id: '44', name: 'Kopi', price: 1.50, subcategory: 'Normal', icon: '☕' },
-      { id: '45', name: 'Kopi O', price: 1.30, subcategory: 'Normal', icon: '☕' },
-      { id: '46', name: 'Kopi C', price: 1.70, subcategory: 'Normal', icon: '☕' },
-      { id: '47', name: 'Kopi Peng', price: 1.80, subcategory: 'Normal', icon: '☕' },
-      { id: '48', name: 'Kopi O Peng', price: 1.60, subcategory: 'Normal', icon: '☕' },
-      { id: '49', name: 'Kopi C Peng', price: 2.00, subcategory: 'Normal', icon: '☕' },
-    ],
-    'Cold Drinks': [
-      { id: '50', name: 'Milo', price: 2.00, subcategory: 'Normal', icon: '🧊' },
-      { id: '51', name: 'Milo Peng', price: 2.50, subcategory: 'Normal', icon: '🧊' },
-      { id: '52', name: 'Lime Juice', price: 2.50, subcategory: 'Normal', icon: '🧊' },
-      { id: '53', name: 'Orange Juice', price: 3.00, subcategory: 'Normal', icon: '🧊' },
-      { id: '54', name: 'Bandung', price: 2.50, subcategory: 'Special', icon: '🧊' },
-      { id: '55', name: 'Teh Tarik Peng', price: 2.00, subcategory: 'Normal', icon: '🧊' },
-    ],
-    'Teas': [
-      { id: '56', name: 'Teh', price: 1.50, subcategory: 'Normal', icon: '🍵' },
-      { id: '57', name: 'Teh O', price: 1.30, subcategory: 'Normal', icon: '🍵' },
-      { id: '58', name: 'Teh C', price: 1.70, subcategory: 'Normal', icon: '🍵' },
-      { id: '59', name: 'Teh Tarik', price: 2.00, subcategory: 'Special', icon: '🍵' },
-      { id: '60', name: 'Teh Halia', price: 2.00, subcategory: 'Special', icon: '🍵' },
-    ],
-    'Desserts': [
-      { id: '61', name: 'Ice Cream', price: 3.00, subcategory: 'Normal', icon: '🍨' },
-      { id: '62', name: 'Cendol', price: 3.50, subcategory: 'Special', icon: '🍨' },
-      { id: '63', name: 'Ice Kacang', price: 4.00, subcategory: 'Special', icon: '🍨' },
-      { id: '64', name: 'Pulut Hitam', price: 3.50, subcategory: 'Special', icon: '🍨' },
-    ],
-  };
+  useEffect(() => {
+    const loadMenu = async () => {
+      try {
+        setLoading(true);
+        const response = await api.getMenuItems();
+        setMenuCategories(response.menu);
+      } catch (error) {
+        console.error('Failed to load menu:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadMenu();
+  }, []);
 
   const addToOrder = (item: any, category: string) => {
     const menuItem: MenuItem = {
@@ -209,7 +145,12 @@ export const MenuView = ({ user, table, onBack, onLogout }: MenuViewProps) => {
                 <p className="text-sm text-gray-600">Select items to add to your order</p>
               </div>
               
-              {Object.entries(menuCategories).map(([category, items]) => (
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading menu...</p>
+                </div>
+              ) : Object.entries(menuCategories).map(([category, items]) => (
                 <Card key={category} className="overflow-hidden border-l-4 border-l-blue-500">
                   <Collapsible 
                     open={openCategories.includes(category)}

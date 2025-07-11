@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SocialLogin } from './SocialLogin';
 import type { User } from '@/pages/Index';
+import { api } from '@/lib/api';
 
 interface LoginPageProps {
   onLogin: (user: User) => void;
@@ -16,22 +17,9 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
-    // Check for admin credentials
-    if (employeeId === '0001' && password === 'admin123') {
-      const userData: User = {
-        id: '0001',
-        name: 'Admin User',
-        email: 'admin@cafe.com',
-        role: 'Admin',
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=admin`,
-      };
-      onLogin(userData);
-      return;
-    }
     
     // Check if credentials are provided
     if (!employeeId || !password) {
@@ -39,16 +27,23 @@ export const LoginPage = ({ onLogin }: LoginPageProps) => {
       return;
     }
     
-    // Simple mock authentication for regular employees
-    const userData: User = {
-      id: employeeId,
-      name: `Employee ${employeeId}`,
-      email: `employee${employeeId}@cafe.com`,
-      role: 'Waiter',
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${employeeId}`,
-    };
-    
-    onLogin(userData);
+    try {
+      const response = await api.login(employeeId, password);
+      
+      // Convert backend user format to frontend format
+      const userData: User = {
+        id: response.user.id.toString(),
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${response.user.employee_id}`,
+      };
+      
+      onLogin(userData);
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      setError(error.message || 'Login failed. Please check your credentials.');
+    }
   };
 
   // Floating cafe SVG elements

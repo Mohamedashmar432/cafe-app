@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TopNavigation } from './TopNavigation';
 import { TableLayout } from './TableLayout';
 import { ThemeSelector } from '@/components/theme/ThemeSelector';
@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import type { User, Table } from '@/pages/Index';
+import { api } from '@/lib/api';
 
 interface DashboardProps {
   user: User;
@@ -16,15 +17,43 @@ interface DashboardProps {
 
 export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => {
   const [isNavVisible, setIsNavVisible] = useState(true);
+  const [tables, setTables] = useState<Table[]>([]);
+  const [stats, setStats] = useState({
+    totalTables: 0,
+    available: 0,
+    occupied: 0,
+    ordering: 0,
+    reserved: 0,
+  });
 
-  // Mock statistics for the dashboard
-  const stats = {
-    totalTables: 15,
-    available: 8,
-    occupied: 4,
-    ordering: 2,
-    reserved: 1,
-  };
+  useEffect(() => {
+    const loadTables = async () => {
+      try {
+        const response = await api.getTables();
+        const tableData = response.tables.map((table: any) => ({
+          id: table.id.toString(),
+          number: table.number,
+          zone: table.zone,
+          seats: table.seats,
+          status: table.status,
+        }));
+        setTables(tableData);
+        
+        // Calculate stats
+        const totalTables = tableData.length;
+        const available = tableData.filter(t => t.status === 'Available').length;
+        const occupied = tableData.filter(t => t.status === 'Full').length;
+        const ordering = tableData.filter(t => t.status === 'Ordering').length;
+        const reserved = tableData.filter(t => t.status === 'Booked').length;
+        
+        setStats({ totalTables, available, occupied, ordering, reserved });
+      } catch (error) {
+        console.error('Failed to load tables:', error);
+      }
+    };
+    
+    loadTables();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
