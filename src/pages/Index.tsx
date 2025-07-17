@@ -18,7 +18,7 @@ export type Table = {
   id: string;
   number: string;
   status: 'Available' | 'Ordering' | 'Full' | 'Booked';
-  zone: 'Section 1' | 'Section 2' | 'Section 3';
+  zone: 'Section 1' | 'Section 2' | 'Section 3' | 'Takeaway';
   seats: number;
 };
 
