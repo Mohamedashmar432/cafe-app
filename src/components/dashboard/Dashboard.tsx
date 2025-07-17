@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { TopNavigation } from './TopNavigation';
-import { TableLayout } from './TableLayout';
+import { DiningSection } from './DiningSection';
 import { ThemeSelector } from '@/components/theme/ThemeSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Users, Clock, CheckCircle, XCircle, Utensils, Car } from 'lucide-react';
 import type { User, Table } from '@/pages/Index';
 import { api } from '@/lib/api';
 
@@ -17,6 +18,7 @@ interface DashboardProps {
 
 export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => {
   const [isNavVisible, setIsNavVisible] = useState(true);
+  const [currentSection, setCurrentSection] = useState<'overview' | 'Section 1' | 'Section 2' | 'Section 3' | 'Takeaway'>('overview');
   const [tables, setTables] = useState<Table[]>([]);
   const [stats, setStats] = useState({
     totalTables: 0,
@@ -54,6 +56,30 @@ export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => 
     
     loadTables();
   }, []);
+
+  if (currentSection !== 'overview') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+        <TopNavigation
+          user={user}
+          onLogout={onLogout}
+          isVisible={isNavVisible}
+          onToggleVisibility={() => setIsNavVisible(!isNavVisible)}
+        />
+        
+        <main className={`transition-all duration-300 ${isNavVisible ? 'pt-20' : 'pt-8'}`}>
+          <div className="container mx-auto p-4 md:p-6">
+            <DiningSection
+              section={currentSection}
+              tables={tables}
+              onTableSelect={onTableSelect}
+              onBack={() => setCurrentSection('overview')}
+            />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
@@ -139,10 +165,53 @@ export const Dashboard = ({ user, onLogout, onTableSelect }: DashboardProps) => 
             </Card>
           </div>
           
-          {/* Main Table Layout */}
+          {/* Dining Sections */}
           <Card className="bg-card/80 backdrop-blur-sm shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-center text-xl">Dining Areas</CardTitle>
+            </CardHeader>
             <CardContent className="p-4 md:p-6">
-              <TableLayout onTableSelect={onTableSelect} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Button
+                  variant="outline"
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-blue-50"
+                  onClick={() => setCurrentSection('Section 1')}
+                >
+                  <Utensils className="h-8 w-8 text-blue-600" />
+                  <span className="font-semibold">Section 1</span>
+                  <span className="text-sm text-muted-foreground">Full Page View</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-green-50"
+                  onClick={() => setCurrentSection('Section 2')}
+                >
+                  <Utensils className="h-8 w-8 text-green-600" />
+                  <span className="font-semibold">Section 2</span>
+                  <span className="text-sm text-muted-foreground">Full Page View</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-purple-50"
+                  onClick={() => setCurrentSection('Section 3')}
+                >
+                  <Utensils className="h-8 w-8 text-purple-600" />
+                  <span className="font-semibold">Section 3</span>
+                  <span className="text-sm text-muted-foreground">Full Page View</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-orange-50"
+                  onClick={() => setCurrentSection('Takeaway')}
+                >
+                  <Car className="h-8 w-8 text-orange-600" />
+                  <span className="font-semibold">Takeaway</span>
+                  <span className="text-sm text-muted-foreground">Full Page View</span>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

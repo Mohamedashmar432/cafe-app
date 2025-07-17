@@ -2,36 +2,26 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
   Receipt, 
   DollarSign, 
-  UserPlus, 
-  Trash2, 
   ArrowLeft,
-  Eye,
-  EyeOff,
   ChefHat,
-  Plus
+  UserCog,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react';
 import { TopNavigation } from '@/components/dashboard/TopNavigation';
+import { EmployeeManagement } from './EmployeeManagement';
+import { MenuManagement } from './MenuManagement';
 import type { User } from '@/pages/Index';
 
 interface AdminDashboardProps {
   user: User;
   onLogout: () => void;
   onBack: () => void;
-}
-
-interface Employee {
-  id: string;
-  name: string;
-  employeeId: string;
-  role: 'Admin' | 'Waiter' | 'Cashier';
-  status: 'Active' | 'Inactive';
 }
 
 interface Order {
@@ -44,23 +34,9 @@ interface Order {
   timestamp: Date;
 }
 
-interface MenuItemType {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  subcategory: 'Special' | 'Strong' | 'Less Sugar' | 'Normal';
-  icon: string;
-}
-
 export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) => {
   const [isNavVisible, setIsNavVisible] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [employees, setEmployees] = useState<Employee[]>([
-    { id: '1', name: 'Admin User', employeeId: '0001', role: 'Admin', status: 'Active' },
-    { id: '2', name: 'John Doe', employeeId: '0002', role: 'Waiter', status: 'Active' },
-    { id: '3', name: 'Jane Smith', employeeId: '0003', role: 'Cashier', status: 'Active' },
-  ]);
+  const [currentView, setCurrentView] = useState<'overview' | 'employees' | 'menu'>('overview');
   
   const [orders] = useState<Order[]>([
     { 
@@ -81,80 +57,81 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
       status: 'Pending', 
       timestamp: new Date() 
     },
+    { 
+      id: '3', 
+      tableNumber: '7', 
+      employeeId: '0002', 
+      items: ['Mee Goreng', 'Iced Milo'], 
+      total: 6.80, 
+      status: 'Completed', 
+      timestamp: new Date() 
+    },
+    { 
+      id: '4', 
+      tableNumber: '2', 
+      employeeId: '0003', 
+      items: ['Thosai', 'Kopi O'], 
+      total: 4.20, 
+      status: 'Completed', 
+      timestamp: new Date() 
+    },
   ]);
 
-  const [menuItems, setMenuItems] = useState<MenuItemType[]>([
-    { id: '1', name: 'Prata Kosong', price: 1.50, category: 'Famous Prata Items', subcategory: 'Normal', icon: '🥞' },
-    { id: '2', name: 'Chicken Biryani', price: 8.50, category: 'Biryani', subcategory: 'Normal', icon: '🍛' },
-    { id: '3', name: 'Kopi', price: 1.50, category: 'Coffees', subcategory: 'Normal', icon: '☕' },
-  ]);
+  if (currentView === 'employees') {
+    return (
+      <div className="min-h-screen bg-background">
+        <TopNavigation
+          user={user}
+          onLogout={onLogout}
+          isVisible={isNavVisible}
+          onToggleVisibility={() => setIsNavVisible(!isNavVisible)}
+        />
+        <main className={`transition-all duration-300 ${isNavVisible ? 'pt-20' : 'pt-8'}`}>
+          <div className="container mx-auto p-4 md:p-6">
+            <EmployeeManagement onBack={() => setCurrentView('overview')} />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
-  const [newEmployee, setNewEmployee] = useState({
-    name: '',
-    employeeId: '',
-    password: '',
-    role: 'Waiter' as 'Admin' | 'Waiter' | 'Cashier'
-  });
-
-  const [newMenuItem, setNewMenuItem] = useState({
-    name: '',
-    price: '',
-    category: '',
-    subcategory: 'Normal' as 'Special' | 'Strong' | 'Less Sugar' | 'Normal',
-    icon: '🍽️'
-  });
-
-  const categories = [
-    'Famous Prata Items',
-    'Goreng Items', 
-    'Biryani',
-    'Thosai',
-    'Coffees',
-    'Cold Drinks',
-    'Teas',
-    'Desserts'
-  ];
-
-  const handleAddEmployee = () => {
-    if (newEmployee.name && newEmployee.employeeId && newEmployee.password) {
-      const employee: Employee = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: newEmployee.name,
-        employeeId: newEmployee.employeeId,
-        role: newEmployee.role,
-        status: 'Active'
-      };
-      setEmployees([...employees, employee]);
-      setNewEmployee({ name: '', employeeId: '', password: '', role: 'Waiter' });
-    }
-  };
-
-  const handleAddMenuItem = () => {
-    if (newMenuItem.name && newMenuItem.price && newMenuItem.category) {
-      const menuItem: MenuItemType = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: newMenuItem.name,
-        price: parseFloat(newMenuItem.price),
-        category: newMenuItem.category,
-        subcategory: newMenuItem.subcategory,
-        icon: newMenuItem.icon
-      };
-      setMenuItems([...menuItems, menuItem]);
-      setNewMenuItem({ name: '', price: '', category: '', subcategory: 'Normal', icon: '🍽️' });
-    }
-  };
-
-  const handleDeleteEmployee = (id: string) => {
-    setEmployees(employees.filter(emp => emp.id !== id));
-  };
-
-  const handleDeleteMenuItem = (id: string) => {
-    setMenuItems(menuItems.filter(item => item.id !== id));
-  };
+  if (currentView === 'menu') {
+    return (
+      <div className="min-h-screen bg-background">
+        <TopNavigation
+          user={user}
+          onLogout={onLogout}
+          isVisible={isNavVisible}
+          onToggleVisibility={() => setIsNavVisible(!isNavVisible)}
+        />
+        <main className={`transition-all duration-300 ${isNavVisible ? 'pt-20' : 'pt-8'}`}>
+          <div className="container mx-auto p-4 md:p-6">
+            <MenuManagement onBack={() => setCurrentView('overview')} />
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
   const pendingOrders = orders.filter(order => order.status === 'Pending').length;
   const completedOrders = orders.filter(order => order.status === 'Completed').length;
+  const cancelledOrders = orders.filter(order => order.status === 'Cancelled').length;
+
+  // Daily sales data for graphical overview
+  const dailySales = [
+    { time: '9 AM', sales: 120 },
+    { time: '10 AM', sales: 180 },
+    { time: '11 AM', sales: 240 },
+    { time: '12 PM', sales: 380 },
+    { time: '1 PM', sales: 420 },
+    { time: '2 PM', sales: 350 },
+    { time: '3 PM', sales: 280 },
+    { time: '4 PM', sales: 220 },
+    { time: '5 PM', sales: 190 },
+  ];
+
+  const maxSales = Math.max(...dailySales.map(d => d.sales));
 
   return (
     <div className="min-h-screen bg-background">
@@ -181,6 +158,33 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
             </div>
           </div>
 
+          {/* Management Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              variant="outline"
+              className="h-20 flex items-center justify-center space-x-4 hover:bg-blue-50"
+              onClick={() => setCurrentView('employees')}
+            >
+              <UserCog className="h-8 w-8 text-blue-600" />
+              <div className="text-left">
+                <div className="font-semibold">Employee Management</div>
+                <div className="text-sm text-muted-foreground">Add, edit, and manage staff</div>
+              </div>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-20 flex items-center justify-center space-x-4 hover:bg-green-50"
+              onClick={() => setCurrentView('menu')}
+            >
+              <ChefHat className="h-8 w-8 text-green-600" />
+              <div className="text-left">
+                <div className="font-semibold">Menu Management</div>
+                <div className="text-sm text-muted-foreground">Add, edit, and manage menu items</div>
+              </div>
+            </Button>
+          </div>
+
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-blue-100">
@@ -196,10 +200,10 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
             <Card className="border-l-4 border-l-green-500 bg-gradient-to-br from-green-50 to-green-100">
               <CardContent className="p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Users className="h-8 w-8 text-green-600" />
+                  <TrendingUp className="h-8 w-8 text-green-600" />
                 </div>
-                <div className="text-3xl font-bold text-green-800">{employees.length}</div>
-                <div className="text-sm text-green-600 font-medium">Employees</div>
+                <div className="text-3xl font-bold text-green-800">{completedOrders}</div>
+                <div className="text-sm text-green-600 font-medium">Completed Orders</div>
               </CardContent>
             </Card>
 
@@ -224,13 +228,47 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Orders Section */}
-            <Card className="border-2 border-gray-200">
-              <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
-                <CardTitle className="text-gray-800">Recent Orders</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          {/* Daily Sales Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <BarChart3 className="h-5 w-5" />
+                <span>Daily Sales Overview</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm text-muted-foreground">
+                  <span>Hourly Sales ($)</span>
+                  <span>Peak: ${maxSales}</span>
+                </div>
+                <div className="grid grid-cols-9 gap-2 h-40">
+                  {dailySales.map((data, index) => (
+                    <div key={index} className="flex flex-col items-center space-y-2">
+                      <div className="flex-1 flex items-end">
+                        <div
+                          className="w-full bg-gradient-to-t from-blue-500 to-blue-300 rounded-t"
+                          style={{ height: `${(data.sales / maxSales) * 100}%` }}
+                        />
+                      </div>
+                      <div className="text-xs text-center">
+                        <div className="font-semibold">${data.sales}</div>
+                        <div className="text-muted-foreground">{data.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Orders */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Orders</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
                 {orders.map(order => (
                   <div key={order.id} className="border rounded-lg p-4 bg-gradient-to-r from-white to-gray-50">
                     <div className="flex justify-between items-start mb-2">
@@ -244,7 +282,9 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                         variant={order.status === 'Completed' ? 'default' : 'secondary'}
                         className={order.status === 'Completed' 
                           ? 'bg-green-100 text-green-800 border-green-300' 
-                          : 'bg-yellow-100 text-yellow-800 border-yellow-300'}
+                          : order.status === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                          : 'bg-red-100 text-red-800 border-red-300'}
                       >
                         {order.status}
                       </Badge>
@@ -255,263 +295,6 @@ export const AdminDashboard = ({ user, onLogout, onBack }: AdminDashboardProps) 
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
-
-            {/* Add Employee Section */}
-            <Card className="border-2 border-blue-200">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100">
-                <CardTitle className="flex items-center space-x-2 text-blue-800">
-                  <UserPlus className="h-5 w-5" />
-                  <span>Add New Employee</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-gray-700 font-medium">Name</Label>
-                  <Input
-                    id="name"
-                    value={newEmployee.name}
-                    onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})}
-                    placeholder="Employee name"
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="employeeId" className="text-gray-700 font-medium">Employee ID</Label>
-                  <Input
-                    id="employeeId"
-                    value={newEmployee.employeeId}
-                    onChange={(e) => setNewEmployee({...newEmployee, employeeId: e.target.value})}
-                    placeholder="0004"
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={newEmployee.password}
-                      onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})}
-                      placeholder="Enter password"
-                      className="border-gray-300 focus:border-blue-500"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-blue-50"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="role" className="text-gray-700 font-medium">Role</Label>
-                  <select
-                    id="role"
-                    value={newEmployee.role}
-                    onChange={(e) => setNewEmployee({...newEmployee, role: e.target.value as 'Admin' | 'Waiter' | 'Cashier'})}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
-                  >
-                    <option value="Waiter">Waiter</option>
-                    <option value="Cashier">Cashier</option>
-                    <option value="Admin">Admin</option>
-                  </select>
-                </div>
-
-                <Button onClick={handleAddEmployee} className="w-full bg-green-600 hover:bg-green-700 font-semibold">
-                  Add Employee
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Add Menu Item Section */}
-            <Card className="border-2 border-orange-200">
-              <CardHeader className="bg-gradient-to-r from-orange-50 to-orange-100">
-                <CardTitle className="flex items-center space-x-2 text-orange-800">
-                  <ChefHat className="h-5 w-5" />
-                  <span>Add Menu Item</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="itemName" className="text-gray-700 font-medium">Item Name</Label>
-                  <Input
-                    id="itemName"
-                    value={newMenuItem.name}
-                    onChange={(e) => setNewMenuItem({...newMenuItem, name: e.target.value})}
-                    placeholder="Item name"
-                    className="border-gray-300 focus:border-orange-500"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="itemPrice" className="text-gray-700 font-medium">Price ($)</Label>
-                  <Input
-                    id="itemPrice"
-                    type="number"
-                    step="0.01"
-                    value={newMenuItem.price}
-                    onChange={(e) => setNewMenuItem({...newMenuItem, price: e.target.value})}
-                    placeholder="0.00"
-                    className="border-gray-300 focus:border-orange-500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="itemCategory" className="text-gray-700 font-medium">Category</Label>
-                  <select
-                    id="itemCategory"
-                    value={newMenuItem.category}
-                    onChange={(e) => setNewMenuItem({...newMenuItem, category: e.target.value})}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none"
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="itemSubcategory" className="text-gray-700 font-medium">Subcategory</Label>
-                  <select
-                    id="itemSubcategory"
-                    value={newMenuItem.subcategory}
-                    onChange={(e) => setNewMenuItem({...newMenuItem, subcategory: e.target.value as 'Special' | 'Strong' | 'Less Sugar' | 'Normal'})}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none"
-                  >
-                    <option value="Normal">Normal</option>
-                    <option value="Special">Special</option>
-                    <option value="Strong">Strong</option>
-                    <option value="Less Sugar">Less Sugar</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="itemIcon" className="text-gray-700 font-medium">Icon (Emoji)</Label>
-                  <Input
-                    id="itemIcon"
-                    value={newMenuItem.icon}
-                    onChange={(e) => setNewMenuItem({...newMenuItem, icon: e.target.value})}
-                    placeholder="🍽️"
-                    className="border-gray-300 focus:border-orange-500"
-                  />
-                </div>
-
-                <Button onClick={handleAddMenuItem} className="w-full bg-orange-600 hover:bg-orange-700 font-semibold">
-                  Add Menu Item
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Menu Items List */}
-            <Card className="border-2 border-purple-200">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100">
-                <CardTitle className="text-purple-800">Menu Items</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 max-h-96 overflow-y-auto">
-                {menuItems.map((item, index) => (
-                  <div key={item.id} className={`border rounded-lg p-3 ${index % 2 === 0 ? 'bg-purple-50' : 'bg-white'} hover:bg-purple-100 transition-colors`}>
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-center space-x-3 flex-1">
-                        <span className="text-lg">{item.icon}</span>
-                        <div>
-                          <h4 className="font-bold text-purple-800">{item.name}</h4>
-                          <p className="text-sm text-purple-600">{item.category}</p>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <span className="font-bold text-green-700">${item.price.toFixed(2)}</span>
-                            <Badge className={`text-xs ${
-                              item.subcategory === 'Special' ? 'bg-purple-100 text-purple-800' :
-                              item.subcategory === 'Strong' ? 'bg-red-100 text-red-800' :
-                              item.subcategory === 'Less Sugar' ? 'bg-green-100 text-green-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {item.subcategory}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteMenuItem(item.id)}
-                        className="border-red-300 text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Employees List */}
-          <Card className="border-2 border-gray-200">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
-              <CardTitle className="text-gray-800">Employee Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-gray-200 bg-gray-50">
-                      <th className="text-left p-3 font-semibold text-gray-700">Name</th>
-                      <th className="text-left p-3 font-semibold text-gray-700">Employee ID</th>
-                      <th className="text-left p-3 font-semibold text-gray-700">Role</th>
-                      <th className="text-left p-3 font-semibold text-gray-700">Status</th>
-                      <th className="text-left p-3 font-semibold text-gray-700">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {employees.map((employee, index) => (
-                      <tr key={employee.id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                        <td className="p-3 font-medium text-gray-800">{employee.name}</td>
-                        <td className="p-3 text-blue-600 font-semibold">{employee.employeeId}</td>
-                        <td className="p-3">
-                          <Badge 
-                            variant="outline" 
-                            className={employee.role === 'Admin' ? 'bg-purple-100 text-purple-800 border-purple-300' : 
-                                      employee.role === 'Waiter' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                                      'bg-green-100 text-green-800 border-green-300'}
-                          >
-                            {employee.role}
-                          </Badge>
-                        </td>
-                        <td className="p-3">
-                          <Badge 
-                            variant={employee.status === 'Active' ? 'default' : 'secondary'}
-                            className={employee.status === 'Active' ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-800 border-gray-300'}
-                          >
-                            {employee.status}
-                          </Badge>
-                        </td>
-                        <td className="p-3">
-                          {employee.employeeId !== '0001' && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDeleteEmployee(employee.id)}
-                              className="border-red-300 text-red-600 hover:bg-red-50"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
             </CardContent>
           </Card>
